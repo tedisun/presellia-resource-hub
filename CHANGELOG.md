@@ -1,0 +1,19 @@
+﻿# Changelog — Presellia Resource Hub
+
+Toutes les modifications notables apportées à ce projet seront documentées dans ce fichier.
+
+Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
+
+## [1.0.0] — 2026-09-15
+### Ajouté
+- Version initiale du plugin Presellia Resource Hub.
+- Custom Post Type `presellia_ressource` avec slug d'archive `/ressources/`.
+- Taxonomie personnalisée `categorie_ressource` avec filtres interactifs.
+- Métadonnées de ressource simplifiées : spécification/format, type et URL de média (image / YouTube / vidéo), mode d'accès (gratuit direct ou lead généré FluentCRM), tag FluentCRM, produit WooCommerce lié pour Grand Slam Offer, promesse/bénéfice principal et value stack.
+- Modèle d'archive `/ressources/` moderne, responsive, avec covers 16:9, barre de recherche temps réel et filtres par catégorie.
+- Modèle de ressource unique `/ressources/{slug}/` style Alex Hormozi (headline axée résultat, média d'autorité, stack de valeur à puces, formulaire de capture FluentCRM avec WhatsApp/téléphone et box d'offre spéciale WooCommerce en temps réel).
+- Passerelle native AJAX vers FluentCRM Pro via `FluentCrmApi('contacts')`.
+- Table de log MySQL dédiée `{prefix}prh_logs` et classe statique `PRH_Logger`.
+- API REST / MCP `/prh/v1/` (`/status`, `/logs`, `/resources`) sécurisée par en-tête `X-PRH-API-Key` pour diagnostic et gestion autonome par agents IA.
+- Page de réglages administrateur pour la gestion de la clé API MCP, l'affichage des logs et les statistiques système.
+- Compatibilité déclarée WooCommerce High-Performance Order Storage (HPOS).

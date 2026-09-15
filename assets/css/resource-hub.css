@@ -1,0 +1,692 @@
+﻿/* ==========================================================================
+   Presellia Resource Hub — Styles Frontend
+   ========================================================================== */
+
+/* Shoptimizer theme overrides & containment */
+.post-type-archive-presellia_ressource #secondary,
+.tax-categorie_ressource #secondary,
+.single-presellia_ressource #secondary {
+    display: none !important;
+}
+
+.post-type-archive-presellia_ressource #primary,
+.tax-categorie_ressource #primary,
+.single-presellia_ressource #primary {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    float: none !important;
+}
+
+.post-type-archive-presellia_ressource .site-content .col-full,
+.tax-categorie_ressource .site-content .col-full,
+.single-presellia_ressource .site-content .col-full {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+}
+
+/* Base Hub Wrapper */
+.prh-hub-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    margin: 30px auto 60px;
+    max-width: 1240px;
+}
+
+/* Hero Section */
+.prh-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+    margin-bottom: 30px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.prh-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e0e7ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    margin-bottom: 16px;
+}
+
+.prh-hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 0 0 12px;
+    letter-spacing: -0.5px;
+}
+
+.prh-hero p.prh-hero-sub {
+    font-size: 17px;
+    color: #475569;
+    max-width: 680px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+}
+
+/* Search Bar & Filters */
+.prh-controls {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.prh-search-box {
+    position: relative;
+    width: 100%;
+}
+
+.prh-search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+.prh-search-input {
+    width: 100% !important;
+    height: 54px !important;
+    padding: 12px 24px 12px 54px !important;
+    font-size: 16px !important;
+    color: #1e293b !important;
+    background: #ffffff !important;
+    border: 2px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+}
+
+.prh-search-input::placeholder {
+    color: #94a3b8 !important;
+    font-weight: 400 !important;
+}
+
+.prh-search-input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+    outline: none !important;
+}
+
+.prh-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.prh-pill {
+    padding: 8px 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.prh-pill:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.prh-pill.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+/* Grid of Resources */
+.prh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 28px;
+    margin-top: 36px;
+}
+
+.prh-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+    color: inherit;
+}
+
+.prh-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.prh-card-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0f172a;
+    overflow: hidden;
+}
+
+.prh-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.prh-card:hover .prh-card-cover img {
+    transform: scale(1.03);
+}
+
+.prh-card-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.prh-card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.prh-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.prh-card-spec-pill {
+    background: #f1f5f9;
+    color: #334155;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.prh-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+
+.prh-card-excerpt {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0 0 18px;
+    flex-grow: 1;
+}
+
+.prh-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.prh-card-os {
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.prh-card-cta {
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+}
+
+.prh-card:hover .prh-card-cta {
+    color: #1d4ed8;
+}
+
+/* ==========================================================================
+   Single Resource Page (Alex Hormozi Style)
+   ========================================================================== */
+
+.prh-single-wrap {
+    max-width: 980px;
+    margin: 30px auto 70px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+}
+
+.prh-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+}
+
+.prh-breadcrumb:hover {
+    color: #0f172a;
+}
+
+.prh-single-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.prh-single-category {
+    display: inline-block;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    margin-bottom: 16px;
+}
+
+.prh-single-title {
+    font-size: 38px;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    letter-spacing: -0.5px;
+}
+
+.prh-single-subtitle {
+    font-size: 20px;
+    color: #475569;
+    max-width: 760px;
+    margin: 0 auto 20px;
+    line-height: 1.5;
+}
+
+.prh-single-meta-bar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.prh-single-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 5px 12px;
+    border-radius: 8px;
+}
+
+/* Media Box */
+.prh-media-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #0f172a;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    margin-bottom: 40px;
+}
+
+.prh-media-container img,
+.prh-media-container iframe,
+.prh-media-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+}
+
+/* Value Stack (Ce que vous obtenez) */
+.prh-value-stack-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.prh-value-stack-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.prh-value-stack-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.prh-value-stack-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 16px;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.prh-check-icon {
+    width: 22px;
+    height: 22px;
+    color: #10b981;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Main Action Box */
+.prh-action-box {
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 18px;
+    padding: 36px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+    margin-bottom: 50px;
+}
+
+.prh-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #2563eb;
+    color: #ffffff !important;
+    font-size: 18px;
+    font-weight: 800;
+    padding: 16px 36px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    cursor: pointer;
+    border: none;
+}
+
+.prh-action-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+}
+
+.prh-action-guarantee {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 14px;
+}
+
+/* Grand Slam Offer Box (WooCommerce Cross-Sell) */
+.prh-offer-box {
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 50px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prh-offer-tag {
+    display: inline-block;
+    background: #f59e0b;
+    color: #0f172a;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+}
+
+.prh-offer-content {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 30px;
+    align-items: center;
+}
+
+.prh-offer-left h2 {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 12px;
+    line-height: 1.3;
+}
+
+.prh-offer-left p {
+    color: #cbd5e1;
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 20px;
+}
+
+.prh-offer-right {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+}
+
+.prh-offer-price-old {
+    text-decoration: line-through;
+    color: #94a3b8;
+    font-size: 16px;
+}
+
+.prh-offer-price-now {
+    font-size: 32px;
+    font-weight: 900;
+    color: #10b981;
+    margin: 4px 0 16px;
+}
+
+.prh-offer-btn {
+    display: block;
+    width: 100%;
+    background: #10b981;
+    color: #ffffff !important;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 14px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.prh-offer-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+/* Modal FluentCRM Lead Capture */
+.prh-modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.prh-modal {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    padding: 36px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: prhFadeIn 0.25s ease-out;
+}
+
+@keyframes prhFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.prh-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.prh-modal h3 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+.prh-modal p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0 0 24px;
+}
+
+.prh-form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.prh-form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.prh-form-group input {
+    width: 100% !important;
+    height: 48px !important;
+    padding: 10px 16px !important;
+    font-size: 15px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+}
+
+.prh-form-group input:focus {
+    border-color: #2563eb !important;
+    outline: none !important;
+}
+
+.prh-form-submit {
+    width: 100%;
+    height: 50px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+
+.prh-form-submit:hover {
+    background: #1d4ed8;
+}
+
+.prh-form-submit:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .prh-grid {
+        grid-template-columns: 1fr;
+    }
+    .prh-hero h1 {
+        font-size: 28px;
+    }
+    .prh-single-title {
+        font-size: 28px;
+    }
+    .prh-offer-content {
+        grid-template-columns: 1fr;
+    }
+}

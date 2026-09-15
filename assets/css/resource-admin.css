@@ -1,0 +1,46 @@
+﻿/* ==========================================================================
+   Presellia Resource Hub — Admin Metabox Styles
+   ========================================================================== */
+
+.prh-metabox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    padding: 10px 0;
+}
+
+.prh-metabox-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.prh-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #1e293b;
+    font-size: 13px;
+}
+
+.prh-field input[type="text"],
+.prh-field input[type="url"],
+.prh-field input[type="number"],
+.prh-field select,
+.prh-field textarea {
+    width: 100%;
+    border-radius: 6px;
+    border-color: #cbd5e1;
+    padding: 6px 12px;
+}
+
+.prh-field input:focus,
+.prh-field select:focus,
+.prh-field textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px #2563eb;
+    outline: none;
+}
+
+.prh-field .description {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 4px;
+}

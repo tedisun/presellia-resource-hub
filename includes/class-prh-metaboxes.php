@@ -1,0 +1,201 @@
+﻿<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Gère les métadonnées et métaboxes des ressources Presellia.
+ */
+class PRH_Metaboxes {
+
+    public function __construct() {
+        add_action( 'add_meta_boxes', [ $this, 'register_meta_boxes' ] );
+        add_action( 'save_post_' . PRH_Cpt::POST_TYPE, [ $this, 'save_meta_boxes' ], 10, 2 );
+        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_assets' ] );
+    }
+
+    public function enqueue_admin_assets( string $hook ): void {
+        global $post;
+        if ( in_array( $hook, [ 'post.php', 'post-new.php' ], true ) && isset( $post->post_type ) && PRH_Cpt::POST_TYPE === $post->post_type ) {
+            wp_enqueue_style(
+                'prh-admin-css',
+                PRH_URL . 'assets/css/resource-admin.css',
+                [],
+                PRH_VERSION
+            );
+            wp_enqueue_script(
+                'prh-admin-js',
+                PRH_URL . 'assets/js/resource-admin.js',
+                [ 'jquery' ],
+                PRH_VERSION,
+                true
+            );
+        }
+    }
+
+    public function register_meta_boxes(): void {
+        add_meta_box(
+            'prh_resource_settings',
+            __( 'Configuration de la Ressource', 'presellia-resource-hub' ),
+            [ $this, 'render_main_metabox' ],
+            PRH_Cpt::POST_TYPE,
+            'normal',
+            'high'
+        );
+
+        add_meta_box(
+            'prh_resource_offer',
+            __( 'Offre Recommandée (WooCommerce Grand Slam Box)', 'presellia-resource-hub' ),
+            [ $this, 'render_offer_metabox' ],
+            PRH_Cpt::POST_TYPE,
+            'normal',
+            'default'
+        );
+    }
+
+    public function render_main_metabox( WP_Post $post ): void {
+        wp_nonce_field( 'prh_save_resource_meta', 'prh_resource_nonce' );
+
+        $format_spec    = get_post_meta( $post->ID, '_prh_format_spec', true );
+        $compatible_os  = get_post_meta( $post->ID, '_prh_compatible_os', true );
+        $download_url   = get_post_meta( $post->ID, '_prh_download_url', true );
+        $media_type     = get_post_meta( $post->ID, '_prh_media_type', true ) ?: 'image';
+        $media_url      = get_post_meta( $post->ID, '_prh_media_url', true );
+        $access_type    = get_post_meta( $post->ID, '_prh_access_type', true ) ?: 'free';
+        $crm_tag        = get_post_meta( $post->ID, '_prh_crm_tag', true );
+        $subtitle       = get_post_meta( $post->ID, '_prh_subtitle', true );
+        $value_stack    = get_post_meta( $post->ID, '_prh_value_stack', true );
+        ?>
+        <div class="prh-metabox-grid">
+            <div class="prh-field full-width">
+                <label for="prh_subtitle"><strong><?php esc_html_e( 'Promesse / Sous-titre d\'accroche (Style Hormozi)', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_subtitle" name="prh_subtitle" value="<?php echo esc_attr( $subtitle ); ?>" class="large-text" placeholder="Ex: Débloquez et réparez vos licences en 3 minutes sans réinstaller Windows" />
+                <p class="description"><?php esc_html_e( 'S\'affiche directement sous le titre principal pour maximiser la clarté et l\'engagement.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_format_spec"><strong><?php esc_html_e( 'Format & Spécification technique', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_format_spec" name="prh_format_spec" value="<?php echo esc_attr( $format_spec ); ?>" class="regular-text" placeholder="Ex: PDF · 18 pages ou Script PowerShell ou ISO · 4.6 Go" />
+                <p class="description"><?php esc_html_e( 'Un champ texte clair affiché en pill/badge sur la carte et la page.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_compatible_os"><strong><?php esc_html_e( 'Systèmes / Logiciels compatibles', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_compatible_os" name="prh_compatible_os" value="<?php echo esc_attr( $compatible_os ); ?>" class="regular-text" placeholder="Ex: Windows 11 / 10 / Server" />
+            </div>
+
+            <div class="prh-field full-width">
+                <label for="prh_download_url"><strong><?php esc_html_e( 'Lien direct de téléchargement du fichier / ressource', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="url" id="prh_download_url" name="prh_download_url" value="<?php echo esc_url( $download_url ); ?>" class="large-text" placeholder="https://presellia.com/fichiers/outil.zip ou CDN officiel" />
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_media_type"><strong><?php esc_html_e( 'Format visuel de démonstration', 'presellia-resource-hub' ); ?></strong></label>
+                <select id="prh_media_type" name="prh_media_type">
+                    <option value="image" <?php selected( $media_type, 'image' ); ?>><?php esc_html_e( 'Image / Mockup (Image mise en avant ou URL)', 'presellia-resource-hub' ); ?></option>
+                    <option value="youtube" <?php selected( $media_type, 'youtube' ); ?>><?php esc_html_e( 'Vidéo YouTube (ID ou URL)', 'presellia-resource-hub' ); ?></option>
+                    <option value="custom_video" <?php selected( $media_type, 'custom_video' ); ?>><?php esc_html_e( 'Vidéo MP4 directe', 'presellia-resource-hub' ); ?></option>
+                </select>
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_media_url"><strong><?php esc_html_e( 'URL ou ID de la vidéo / image', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_media_url" name="prh_media_url" value="<?php echo esc_attr( $media_url ); ?>" class="regular-text" placeholder="https://youtube.com/watch?v=... ou laisser vide pour l'image mise en avant" />
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_access_type"><strong><?php esc_html_e( 'Condition d\'accès', 'presellia-resource-hub' ); ?></strong></label>
+                <select id="prh_access_type" name="prh_access_type">
+                    <option value="free" <?php selected( $access_type, 'free' ); ?>><?php esc_html_e( 'Téléchargement direct et gratuit (aucun formulaire)', 'presellia-resource-hub' ); ?></option>
+                    <option value="gated" <?php selected( $access_type, 'gated' ); ?>><?php esc_html_e( 'Accès conditionné : Formulaire FluentCRM (Prénom, Email, Tél)', 'presellia-resource-hub' ); ?></option>
+                </select>
+            </div>
+
+            <div class="prh-field" id="prh_crm_tag_field">
+                <label for="prh_crm_tag"><strong><?php esc_html_e( 'Tag FluentCRM appliqué au prospect', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_crm_tag" name="prh_crm_tag" value="<?php echo esc_attr( $crm_tag ); ?>" class="regular-text" placeholder="Ex: lead-hub-cleaner" />
+                <p class="description"><?php esc_html_e( 'Le contact sera créé/mis à jour dans FluentCRM avec ce tag dès validation.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
+            <div class="prh-field full-width">
+                <label for="prh_value_stack"><strong><?php esc_html_e( 'Ce que contient la ressource (Value Stack / Points clés)', 'presellia-resource-hub' ); ?></strong></label>
+                <textarea id="prh_value_stack" name="prh_value_stack" rows="4" class="large-text" placeholder="Entrez un point par ligne :&#10;Diagnostic automatisé des clés d'enregistrement&#10;Nettoyage des restes d'anciennes installations Office&#10;Rapport d'intégrité du système"><?php echo esc_textarea( $value_stack ); ?></textarea>
+                <p class="description"><?php esc_html_e( 'Chaque ligne sera affichée comme un élément de la liste avec une coche verte ✓.', 'presellia-resource-hub' ); ?></p>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function render_offer_metabox( WP_Post $post ): void {
+        $linked_product_id  = get_post_meta( $post->ID, '_prh_linked_product_id', true );
+        $offer_badge        = get_post_meta( $post->ID, '_prh_offer_badge', true ) ?: 'OFFRE COMPLÉMENTAIRE RECOMMANDÉE';
+        $offer_custom_title = get_post_meta( $post->ID, '_prh_offer_custom_title', true );
+        $offer_custom_desc  = get_post_meta( $post->ID, '_prh_offer_custom_desc', true );
+        ?>
+        <div class="prh-metabox-grid">
+            <div class="prh-field">
+                <label for="prh_linked_product_id"><strong><?php esc_html_e( 'Produit WooCommerce lié (ID)', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="number" id="prh_linked_product_id" name="prh_linked_product_id" value="<?php echo esc_attr( $linked_product_id ); ?>" class="regular-text" placeholder="Ex: 15420" />
+                <p class="description"><?php esc_html_e( 'Laissez vide si vous ne souhaitez pas afficher d\'offre commerciale sur cette ressource.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
+            <div class="prh-field">
+                <label for="prh_offer_badge"><strong><?php esc_html_e( 'Badge au-dessus de l\'offre', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_offer_badge" name="prh_offer_badge" value="<?php echo esc_attr( $offer_badge ); ?>" class="regular-text" />
+            </div>
+
+            <div class="prh-field full-width">
+                <label for="prh_offer_custom_title"><strong><?php esc_html_e( 'Titre personnalisé de l\'offre (optionnel)', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_offer_custom_title" name="prh_offer_custom_title" value="<?php echo esc_attr( $offer_custom_title ); ?>" class="large-text" placeholder="Laissez vide pour utiliser le titre officiel du produit WooCommerce" />
+            </div>
+
+            <div class="prh-field full-width">
+                <label for="prh_offer_custom_desc"><strong><?php esc_html_e( 'Description / Avantage de l\'offre (optionnel)', 'presellia-resource-hub' ); ?></strong></label>
+                <textarea id="prh_offer_custom_desc" name="prh_offer_custom_desc" rows="2" class="large-text" placeholder="Ex: Licence officielle à vie + support technique prioritaire 7j/7. Activation garantie en 30 secondes."><?php echo esc_textarea( $offer_custom_desc ); ?></textarea>
+            </div>
+        </div>
+        <?php
+    }
+
+    public function save_meta_boxes( int $post_id, WP_Post $post ): void {
+        if ( ! isset( $_POST['prh_resource_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['prh_resource_nonce'] ) ), 'prh_save_resource_meta' ) ) {
+            return;
+        }
+
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return;
+        }
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return;
+        }
+
+        $fields = [
+            '_prh_format_spec'         => 'sanitize_text_field',
+            '_prh_compatible_os'       => 'sanitize_text_field',
+            '_prh_download_url'        => 'esc_url_raw',
+            '_prh_media_type'          => 'sanitize_key',
+            '_prh_media_url'           => 'sanitize_text_field',
+            '_prh_access_type'         => 'sanitize_key',
+            '_prh_crm_tag'             => 'sanitize_text_field',
+            '_prh_subtitle'            => 'sanitize_text_field',
+            '_prh_value_stack'         => 'sanitize_textarea_field',
+            '_prh_linked_product_id'   => 'absint',
+            '_prh_offer_badge'         => 'sanitize_text_field',
+            '_prh_offer_custom_title'  => 'sanitize_text_field',
+            '_prh_offer_custom_desc'   => 'sanitize_textarea_field',
+        ];
+
+        foreach ( $fields as $meta_key => $sanitizer ) {
+            $input_key = ltrim( $meta_key, '_' );
+            if ( isset( $_POST[ $input_key ] ) ) {
+                $raw_val = wp_unslash( $_POST[ $input_key ] );
+                $clean_val = call_user_func( $sanitizer, $raw_val );
+                update_post_meta( $post_id, $meta_key, $clean_val );
+            } else {
+                delete_post_meta( $post_id, $meta_key );
+            }
+        }
+    }
+}
