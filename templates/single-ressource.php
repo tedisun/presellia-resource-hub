@@ -25,11 +25,13 @@ $first_slug = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->slug
 
 $value_items = [];
 if ( ! empty( $value_stack_raw ) ) {
-    $lines = explode( "\n", str_replace( "\r", "", $value_stack_raw ) );
-    foreach ( $lines as $line ) {
-        $trimmed = trim( $line );
-        if ( ! empty( $trimmed ) ) {
-            $value_items[] = $trimmed;
+    $lines = preg_split( '/\r\n|\r|\n/', (string) $value_stack_raw );
+    if ( is_array( $lines ) ) {
+        foreach ( $lines as $line ) {
+            $trimmed = trim( $line );
+            if ( ! empty( $trimmed ) ) {
+                $value_items[] = $trimmed;
+            }
         }
     }
 }

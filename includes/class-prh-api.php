@@ -273,26 +273,28 @@ class PRH_Api {
             return $res_id;
         }
 
-        // Metas
-        $meta_mappings = [
-            'format_spec'        => '_prh_format_spec',
-            'compatible_os'      => '_prh_compatible_os',
-            'download_url'       => '_prh_download_url',
-            'media_type'         => '_prh_media_type',
-            'media_url'          => '_prh_media_url',
-            'access_type'        => '_prh_access_type',
-            'crm_tag'            => '_prh_crm_tag',
-            'subtitle'           => '_prh_subtitle',
-            'value_stack'        => '_prh_value_stack',
-            'linked_product_id'  => '_prh_linked_product_id',
-            'offer_badge'        => '_prh_offer_badge',
-            'offer_custom_title' => '_prh_offer_custom_title',
-            'offer_custom_desc'  => '_prh_offer_custom_desc',
+        $meta_sanitizers = [
+            'format_spec'        => 'sanitize_text_field',
+            'compatible_os'      => 'sanitize_text_field',
+            'download_url'       => 'esc_url_raw',
+            'media_type'         => 'sanitize_key',
+            'media_url'          => 'sanitize_text_field',
+            'access_type'        => 'sanitize_key',
+            'crm_tag'            => 'sanitize_text_field',
+            'subtitle'           => 'sanitize_text_field',
+            'value_stack'        => 'sanitize_textarea_field',
+            'linked_product_id'  => 'absint',
+            'offer_badge'        => 'sanitize_text_field',
+            'offer_custom_title' => 'sanitize_text_field',
+            'offer_custom_desc'  => 'sanitize_textarea_field',
         ];
 
-        foreach ( $meta_mappings as $param_key => $meta_key ) {
+        foreach ( $meta_sanitizers as $param_key => $sanitizer ) {
+            $meta_key = '_prh_' . $param_key;
             if ( isset( $params[ $param_key ] ) ) {
-                update_post_meta( $res_id, $meta_key, sanitize_text_field( $params[ $param_key ] ) );
+                $raw = $params[ $param_key ];
+                $clean = call_user_func( $sanitizer, $raw );
+                update_post_meta( $res_id, $meta_key, $clean );
             }
         }
 
