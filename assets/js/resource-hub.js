@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Presellia Resource Hub — Frontend Interactions
  */
 (function($) {

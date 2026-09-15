@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name:       Presellia Resource Hub
  * Plugin URI:        https://presellia.com

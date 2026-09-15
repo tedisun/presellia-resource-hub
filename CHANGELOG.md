@@ -1,4 +1,4 @@
-﻿# Changelog — Presellia Resource Hub
+# Changelog — Presellia Resource Hub
 
 Toutes les modifications notables apportées à ce projet seront documentées dans ce fichier.
 

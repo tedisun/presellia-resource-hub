@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Presellia Resource Hub — Admin Metabox interactions
  */
 jQuery(document).ready(function($) {

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Single : Fiche Ressource (Style Alex Hormozi)
  */

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Archive : Espace Ressources Presellia
  */

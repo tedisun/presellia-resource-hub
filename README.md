@@ -1,4 +1,4 @@
-﻿# Presellia Resource Hub
+# Presellia Resource Hub
 
 Plugin WordPress officiel pour l'espace Ressources de Presellia (Tedisun SARL).
 

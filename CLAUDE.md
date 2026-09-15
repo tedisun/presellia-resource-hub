@@ -1,4 +1,4 @@
-﻿# CLAUDE.md — Presellia Resource Hub
+# CLAUDE.md — Presellia Resource Hub
 
 > Instructions permanentes pour toutes les sessions futures sur ce projet.
 
