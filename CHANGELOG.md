@@ -4,6 +4,12 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.0.1] — 2026-09-15
+### Corrigé
+- Correction de l'encodage UTF-8 (suppression du BOM) pour compatibilité stricte PHP/WordPress.
+- Préservation des sauts de ligne lors de l'enregistrement de la Value Stack (`_prh_value_stack`) via l'API REST MCP.
+- Intégration des illustrations vectorielles 16:9 par catégorie comme fallback automatique dans les templates d'archive et de single.
+
 ## [1.0.0] — 2026-09-15
 ### Ajouté
 - Version initiale du plugin Presellia Resource Hub.
