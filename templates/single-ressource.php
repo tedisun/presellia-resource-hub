@@ -19,8 +19,9 @@ $offer_badge        = get_post_meta( $post_id, '_prh_offer_badge', true ) ?: 'OF
 $offer_custom_title = get_post_meta( $post_id, '_prh_offer_custom_title', true );
 $offer_custom_desc  = get_post_meta( $post_id, '_prh_offer_custom_desc', true );
 
-$terms     = get_the_terms( $post_id, PRH_Cpt::TAXONOMY );
-$first_cat = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
+$terms      = get_the_terms( $post_id, PRH_Cpt::TAXONOMY );
+$first_cat  = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
+$first_slug = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->slug : '';
 
 $value_items = [];
 if ( ! empty( $value_stack_raw ) ) {
@@ -30,6 +31,64 @@ if ( ! empty( $value_stack_raw ) ) {
         if ( ! empty( $trimmed ) ) {
             $value_items[] = $trimmed;
         }
+    }
+}
+
+function prh_get_single_svg( string $cat_slug ): string {
+    switch ( $cat_slug ) {
+        case 'outils-scripts':
+            return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #0B0F19 0%, #1E1B4B 100%);">
+                <svg width="320" height="160" viewBox="0 0 220 110" fill="none" style="filter:drop-shadow(0 15px 30px rgba(0,0,0,0.5));">
+                    <rect width="220" height="110" rx="8" fill="#151C2C" stroke="#312E81" stroke-width="1.5"/>
+                    <circle cx="14" cy="14" r="4" fill="#EF4444"/>
+                    <circle cx="26" cy="14" r="4" fill="#F59E0B"/>
+                    <circle cx="38" cy="14" r="4" fill="#10B981"/>
+                    <text x="14" y="44" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="bold">PS C:\&gt; cscript ospp.vbs</text>
+                    <text x="14" y="64" fill="#4ADE80" font-family="monospace" font-size="10">&lt;Product key removed&gt;</text>
+                    <text x="14" y="84" fill="#A5B4FC" font-family="monospace" font-size="10">Status: Activation OK</text>
+                </svg>
+            </div>';
+        case 'guides-diagnostics':
+            return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #064E3B 0%, #065F46 100%);">
+                <svg width="280" height="170" viewBox="0 0 180 110" fill="none" style="filter:drop-shadow(0 15px 30px rgba(0,0,0,0.4));">
+                    <rect x="35" y="8" width="110" height="94" rx="6" fill="#047857" stroke="#34D399" stroke-width="1.5"/>
+                    <rect x="42" y="16" width="96" height="78" rx="4" fill="#065F46"/>
+                    <text x="50" y="38" fill="#FCD34D" font-family="sans-serif" font-size="10" font-weight="900">PRESELLIA GUIDE</text>
+                    <text x="50" y="52" fill="#FFFFFF" font-family="sans-serif" font-size="11" font-weight="bold">10 ERREURS</text>
+                    <text x="50" y="66" fill="#FFFFFF" font-family="sans-serif" font-size="9">D’ACTIVATION</text>
+                    <rect x="50" y="74" width="40" height="12" rx="3" fill="#10B981"/>
+                    <text x="55" y="83" fill="#FFFFFF" font-family="sans-serif" font-size="8" font-weight="bold">RÉSOLUES</text>
+                </svg>
+            </div>';
+        case 'fichiers-officiels':
+            return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #1E3A8A 0%, #1E1B4B 100%);">
+                <svg width="280" height="160" viewBox="0 0 190 110" fill="none" style="filter:drop-shadow(0 15px 30px rgba(0,0,0,0.45));">
+                    <rect x="45" y="10" width="100" height="90" rx="8" fill="#1D4ED8" stroke="#60A5FA" stroke-width="1.5"/>
+                    <path d="M55 24L75 16V84L55 92V24Z" fill="#1E40AF" opacity="0.6"/>
+                    <text x="80" y="42" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="900">Office</text>
+                    <text x="80" y="58" fill="#FBBF24" font-family="sans-serif" font-size="13" font-weight="900">2024</text>
+                    <text x="80" y="74" fill="#93C5FD" font-family="sans-serif" font-size="9" font-weight="bold">PRO PLUS</text>
+                    <rect x="80" y="80" width="55" height="10" rx="3" fill="#3B82F6"/>
+                    <text x="84" y="88" fill="#FFFFFF" font-family="sans-serif" font-size="7" font-weight="bold">MICROSOFT CDN</text>
+                </svg>
+            </div>';
+        case 'modeles-checklists':
+        default:
+            return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #78350F 0%, #451A03 100%);">
+                <svg width="280" height="160" viewBox="0 0 190 110" fill="none" style="filter:drop-shadow(0 15px 30px rgba(0,0,0,0.4));">
+                    <rect x="40" y="12" width="110" height="86" rx="6" fill="#166534" stroke="#4ADE80" stroke-width="1.5"/>
+                    <rect x="48" y="20" width="94" height="70" rx="3" fill="#FFFFFF"/>
+                    <rect x="48" y="20" width="94" height="16" fill="#15803D"/>
+                    <text x="56" y="32" fill="#FFFFFF" font-family="sans-serif" font-size="9" font-weight="bold">AUDIT LICENCES PME</text>
+                    <line x1="48" y1="48" x2="142" y2="48" stroke="#E2E8F0"/>
+                    <line x1="48" y1="62" x2="142" y2="62" stroke="#E2E8F0"/>
+                    <line x1="48" y1="76" x2="142" y2="76" stroke="#E2E8F0"/>
+                    <line x1="80" y1="36" x2="80" y2="90" stroke="#E2E8F0"/>
+                    <circle cx="64" cy="55" r="3" fill="#16A34A"/>
+                    <circle cx="64" cy="69" r="3" fill="#16A34A"/>
+                    <circle cx="64" cy="83" r="3" fill="#16A34A"/>
+                </svg>
+            </div>';
     }
 }
 ?>
@@ -78,7 +137,6 @@ if ( ! empty( $value_stack_raw ) ) {
     <!-- Zone Média (16:9) -->
     <div class="prh-media-container">
         <?php if ( 'youtube' === $media_type && ! empty( $media_url ) ) : 
-            // Extraction de l'ID YouTube si URL complète fournie
             $yt_id = $media_url;
             if ( preg_match( '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $media_url, $match ) ) {
                 $yt_id = $match[1];
@@ -90,9 +148,7 @@ if ( ! empty( $value_stack_raw ) ) {
         <?php elseif ( has_post_thumbnail() ) : ?>
             <?php the_post_thumbnail( 'full' ); ?>
         <?php else : ?>
-            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #94a3b8;">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </div>
+            <?php echo prh_get_single_svg( $first_slug ); ?>
         <?php endif; ?>
     </div>
 
