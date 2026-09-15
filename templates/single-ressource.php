@@ -209,6 +209,28 @@ function prh_get_single_svg( string $cat_slug ): string {
             $offer_title = ! empty( $offer_custom_title ) ? $offer_custom_title : $product->get_name();
             $offer_desc  = ! empty( $offer_custom_desc ) ? $offer_custom_desc : wp_strip_all_tags( $product->get_short_description() );
             $checkout_url = add_query_arg( 'add-to-cart', $linked_product_id, function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : wc_get_cart_url() );
+
+            // Calcul du prix secondaire (Euro / CFA)
+            $current_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'XOF';
+            $product_price    = (float) $product->get_price();
+            $cfa_rate_to_eur  = 0.00152449;
+
+            global $WOOCS;
+            if ( isset( $WOOCS ) && method_exists( $WOOCS, 'get_currencies' ) ) {
+                $currencies = $WOOCS->get_currencies();
+                if ( ! empty( $currencies['EUR']['rate'] ) ) {
+                    $cfa_rate_to_eur = (float) $currencies['EUR']['rate'];
+                }
+            }
+
+            $secondary_price_text = '';
+            if ( 'EUR' === $current_currency ) {
+                $cfa_calc = round( $product_price / $cfa_rate_to_eur );
+                $secondary_price_text = sprintf( __( 'soit env. %s CFA', 'presellia-resource-hub' ), number_format( $cfa_calc, 0, ',', ' ' ) );
+            } else {
+                $eur_calc = round( $product_price * $cfa_rate_to_eur, 2 );
+                $secondary_price_text = sprintf( __( 'soit env. %s €', 'presellia-resource-hub' ), number_format( $eur_calc, 2, ',', ' ' ) );
+            }
             ?>
             <section class="prh-offer-box">
                 <span class="prh-offer-tag"><?php echo esc_html( $offer_badge ); ?></span>
@@ -230,6 +252,9 @@ function prh_get_single_svg( string $cat_slug ): string {
                             <div class="prh-offer-price-old"><?php echo wc_price( $product->get_regular_price() ); ?></div>
                         <?php endif; ?>
                         <div class="prh-offer-price-now"><?php echo wc_price( $product->get_price() ); ?></div>
+                        <?php if ( ! empty( $secondary_price_text ) ) : ?>
+                            <div class="prh-offer-price-secondary"><?php echo esc_html( $secondary_price_text ); ?></div>
+                        <?php endif; ?>
                         <a href="<?php echo esc_url( $checkout_url ); ?>" class="prh-offer-btn">
                             <?php esc_html_e( 'Obtenir ma licence →', 'presellia-resource-hub' ); ?>
                         </a>

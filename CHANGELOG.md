@@ -4,6 +4,13 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.0.2] — 2026-09-15
+### Ajouté
+- Affichage automatique et esthétique du prix secondaire en Euros (`soit env. 12,96 €`) sous le prix principal CFA dans la box Grand Slam Offer (synchronisé avec les taux dynamiques de WOOCS / FOX).
+- Shortcode `[presellia_resource_hub]` permettant d'intégrer le catalogue de ressources sur n'importe quelle page WordPress standard ou Elementor.
+### Modifié
+- Suppression complète du padding supérieur et des breadcrumbs du thème Shoptimizer sur les modèles de ressource (adoption intégrale du gabarit Full width no heading).
+
 ## [1.0.1] — 2026-09-15
 ### Corrigé
 - Correction de l'encodage UTF-8 (suppression du BOM) pour compatibilité stricte PHP/WordPress.

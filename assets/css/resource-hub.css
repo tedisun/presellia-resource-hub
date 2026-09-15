@@ -26,11 +26,41 @@
     padding: 0 20px !important;
 }
 
+/* Neutralisation du breadcrumb Shoptimizer & suppression du padding supérieur */
+.post-type-archive-presellia_ressource .shoptimizer-breadcrumbs,
+.tax-categorie_ressource .shoptimizer-breadcrumbs,
+.single-presellia_ressource .shoptimizer-breadcrumbs,
+.post-type-archive-presellia_ressource .woocommerce-breadcrumb,
+.tax-categorie_ressource .woocommerce-breadcrumb,
+.single-presellia_ressource .woocommerce-breadcrumb,
+.post-type-archive-presellia_ressource .page-header,
+.tax-categorie_ressource .page-header,
+.single-presellia_ressource .page-header,
+.post-type-archive-presellia_ressource .entry-header,
+.tax-categorie_ressource .entry-header,
+.single-presellia_ressource .entry-header,
+.page-template-template-fullwidth-no-heading .shoptimizer-breadcrumbs,
+.page-template-template-fullwidth-no-heading .page-header {
+    display: none !important;
+}
+
+.post-type-archive-presellia_ressource .site-content,
+.tax-categorie_ressource .site-content,
+.single-presellia_ressource .site-content,
+.post-type-archive-presellia_ressource #content,
+.tax-categorie_ressource #content,
+.single-presellia_ressource #content,
+.page-template-template-fullwidth-no-heading .site-content,
+.page-template-template-fullwidth-no-heading #content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
 /* Base Hub Wrapper */
 .prh-hub-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #1e293b;
-    margin: 30px auto 60px;
+    margin: 15px auto 60px !important;
     max-width: 1240px;
 }
 
@@ -544,6 +574,15 @@
     font-weight: 900;
     color: #10b981;
     margin: 4px 0 16px;
+}
+
+.prh-offer-price-secondary {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-top: -10px;
+    margin-bottom: 18px;
+    letter-spacing: 0.2px;
 }
 
 .prh-offer-btn {
