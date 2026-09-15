@@ -27,6 +27,9 @@
 }
 
 /* Neutralisation du breadcrumb Shoptimizer & suppression du padding supérieur */
+.post-type-archive-presellia_ressource .archive-header,
+.tax-categorie_ressource .archive-header,
+.single-presellia_ressource .archive-header,
 .post-type-archive-presellia_ressource .shoptimizer-breadcrumbs,
 .tax-categorie_ressource .shoptimizer-breadcrumbs,
 .single-presellia_ressource .shoptimizer-breadcrumbs,
@@ -39,9 +42,16 @@
 .post-type-archive-presellia_ressource .entry-header,
 .tax-categorie_ressource .entry-header,
 .single-presellia_ressource .entry-header,
+.page-template-template-fullwidth-no-heading .archive-header,
 .page-template-template-fullwidth-no-heading .shoptimizer-breadcrumbs,
+.page-template-template-fullwidth-no-heading .woocommerce-breadcrumb,
 .page-template-template-fullwidth-no-heading .page-header {
     display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    border: none !important;
 }
 
 .post-type-archive-presellia_ressource .site-content,

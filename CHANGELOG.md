@@ -4,6 +4,11 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.0.3] — 2026-09-15
+### Modifié
+- Suppression définitive du bloc `.archive-header` et des fils d'Ariane résiduels Shoptimizer sur l'archive `/ressources/` et les taxonomies, garantissant un raccordement sans espace blanc directement sous la barre de navigation.
+- Mise à jour du cache-busting des feuilles de style vers la version 1.0.3.
+
 ## [1.0.2] — 2026-09-15
 ### Ajouté
 - Affichage automatique et esthétique du prix secondaire en Euros (`soit env. 12,96 €`) sous le prix principal CFA dans la box Grand Slam Offer (synchronisé avec les taux dynamiques de WOOCS / FOX).
