@@ -54,6 +54,42 @@ class PRH_Metaboxes {
         );
     }
 
+    /**
+     * Récupère la liste des formulaires Fluent Forms disponibles.
+     *
+     * @return array<int, string> [ id => title ]
+     */
+    public static function get_fluent_forms(): array {
+        global $wpdb;
+        $forms = [];
+
+        // 1. Table officielle Fluent Forms (wp_fluentform_forms)
+        $ff_table = $wpdb->prefix . 'fluentform_forms';
+        if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $ff_table ) ) === $ff_table ) {
+            $results = $wpdb->get_results( "SELECT id, title FROM {$ff_table} WHERE status != 'trashed' ORDER BY id DESC" );
+            if ( ! empty( $results ) ) {
+                foreach ( $results as $row ) {
+                    $forms[ intval( $row->id ) ] = $row->title;
+                }
+            }
+        }
+
+        // 2. Table native FluentCRM Forms (wp_fc_forms) si présente
+        $fc_table = $wpdb->prefix . 'fc_forms';
+        if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $fc_table ) ) === $fc_table ) {
+            $results_fc = $wpdb->get_results( "SELECT id, title FROM {$fc_table} ORDER BY id DESC" );
+            if ( ! empty( $results_fc ) ) {
+                foreach ( $results_fc as $row ) {
+                    if ( ! isset( $forms[ intval( $row->id ) ] ) ) {
+                        $forms[ intval( $row->id ) ] = $row->title;
+                    }
+                }
+            }
+        }
+
+        return $forms;
+    }
+
     public function render_main_metabox( WP_Post $post ): void {
         wp_nonce_field( 'prh_save_resource_meta', 'prh_resource_nonce' );
 
@@ -64,6 +100,8 @@ class PRH_Metaboxes {
         $media_url      = get_post_meta( $post->ID, '_prh_media_url', true );
         $access_type    = get_post_meta( $post->ID, '_prh_access_type', true ) ?: 'free';
         $crm_tag        = get_post_meta( $post->ID, '_prh_crm_tag', true );
+        $fluent_form_id = get_post_meta( $post->ID, '_prh_fluent_form_id', true );
+        $available_forms = self::get_fluent_forms();
         $subtitle       = get_post_meta( $post->ID, '_prh_subtitle', true );
         $value_stack    = get_post_meta( $post->ID, '_prh_value_stack', true );
         ?>
@@ -116,6 +154,29 @@ class PRH_Metaboxes {
                 <label for="prh_crm_tag"><strong><?php esc_html_e( 'Tag FluentCRM appliqué au prospect', 'presellia-resource-hub' ); ?></strong></label>
                 <input type="text" id="prh_crm_tag" name="prh_crm_tag" value="<?php echo esc_attr( $crm_tag ); ?>" class="regular-text" placeholder="Ex: lead-hub-cleaner" />
                 <p class="description"><?php esc_html_e( 'Le contact sera créé/mis à jour dans FluentCRM avec ce tag dès validation.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
+            <div class="prh-field full-width" id="prh_fluent_form_picker_field">
+                <label for="prh_fluent_form_id"><strong><?php esc_html_e( 'Formulaire de capture (Fluent Forms / FluentCRM)', 'presellia-resource-hub' ); ?></strong></label>
+                <select id="prh_fluent_form_id" name="prh_fluent_form_id" style="max-width: 100%;">
+                    <option value="0" <?php selected( empty( $fluent_form_id ) || 0 === intval( $fluent_form_id ) ); ?>>
+                        <?php esc_html_e( '⚡ Modale AJAX native Presellia (Prénom, Email, Téléphone WhatsApp)', 'presellia-resource-hub' ); ?>
+                    </option>
+                    <?php if ( ! empty( $available_forms ) ) : ?>
+                        <?php foreach ( $available_forms as $form_id => $form_title ) : ?>
+                            <option value="<?php echo esc_attr( $form_id ); ?>" <?php selected( intval( $fluent_form_id ), intval( $form_id ) ); ?>>
+                                <?php echo sprintf( esc_html__( 'Formulaire #%1$d : %2$s', 'presellia-resource-hub' ), esc_attr( $form_id ), esc_html( $form_title ) ); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <p class="description">
+                    <?php if ( empty( $available_forms ) ) : ?>
+                        <?php esc_html_e( '💡 Dès que vous créez un formulaire dans FluentCRM Pro > Formulaires, il apparaîtra automatiquement dans cette liste sans avoir besoin de copier-coller de shortcode !', 'presellia-resource-hub' ); ?>
+                    <?php else : ?>
+                        <?php esc_html_e( 'Sélectionnez le formulaire Fluent Forms souhaité pour cette ressource. Si aucun n\'est choisi, la modale native Presellia est utilisée.', 'presellia-resource-hub' ); ?>
+                    <?php endif; ?>
+                </p>
             </div>
 
             <div class="prh-field full-width">
@@ -179,6 +240,7 @@ class PRH_Metaboxes {
             '_prh_media_url'           => 'sanitize_text_field',
             '_prh_access_type'         => 'sanitize_key',
             '_prh_crm_tag'             => 'sanitize_text_field',
+            '_prh_fluent_form_id'      => 'absint',
             '_prh_subtitle'            => 'sanitize_text_field',
             '_prh_value_stack'         => 'sanitize_textarea_field',
             '_prh_linked_product_id'   => 'absint',

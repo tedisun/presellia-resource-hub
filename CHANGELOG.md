@@ -4,6 +4,11 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.0.4] — 2026-09-16
+### Ajouté
+- Sélecteur dynamique de formulaires Fluent Forms / FluentCRM dans l'écran d'édition des ressources (liste déroulante automatique avec ID et titre des formulaires sans aucun copier-coller de shortcode).
+- Prise en charge du rendu automatique du formulaire Fluent Forms sélectionné dans la modale de déblocage de la ressource.
+
 ## [1.0.3] — 2026-09-15
 ### Modifié
 - Suppression définitive du bloc `.archive-header` et des fils d'Ariane résiduels Shoptimizer sur l'archive `/ressources/` et les taxonomies, garantissant un raccordement sans espace blanc directement sous la barre de navigation.

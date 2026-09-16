@@ -18,6 +18,7 @@ $linked_product_id  = absint( get_post_meta( $post_id, '_prh_linked_product_id',
 $offer_badge        = get_post_meta( $post_id, '_prh_offer_badge', true ) ?: 'OFFRE COMPLÉMENTAIRE RECOMMANDÉE';
 $offer_custom_title = get_post_meta( $post_id, '_prh_offer_custom_title', true );
 $offer_custom_desc  = get_post_meta( $post_id, '_prh_offer_custom_desc', true );
+$fluent_form_id     = absint( get_post_meta( $post_id, '_prh_fluent_form_id', true ) );
 
 $terms      = get_the_terms( $post_id, PRH_Cpt::TAXONOMY );
 $first_cat  = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
@@ -276,26 +277,32 @@ function prh_get_single_svg( string $cat_slug ): string {
 
         <div id="prh-modal-feedback" style="display: none;"></div>
 
-        <form id="prh-lead-form">
-            <input type="hidden" id="prh-modal-resource-id" value="<?php echo esc_attr( $post_id ); ?>">
-
-            <div class="prh-form-group">
-                <label for="prh_lead_first_name"><?php esc_html_e( 'Votre Prénom', 'presellia-resource-hub' ); ?></label>
-                <input type="text" id="prh_lead_first_name" required placeholder="Ex: Rodrigue">
+        <?php if ( $fluent_form_id > 0 && ( function_exists( 'wpFluentForm' ) || shortcode_exists( 'fluentform' ) ) ) : ?>
+            <div class="prh-fluent-form-container">
+                <?php echo do_shortcode( '[fluentform id="' . $fluent_form_id . '"]' ); ?>
             </div>
+        <?php else : ?>
+            <form id="prh-lead-form">
+                <input type="hidden" id="prh-modal-resource-id" value="<?php echo esc_attr( $post_id ); ?>">
 
-            <div class="prh-form-group">
-                <label for="prh_lead_email"><?php esc_html_e( 'Votre Email Professionnel', 'presellia-resource-hub' ); ?></label>
-                <input type="email" id="prh_lead_email" required placeholder="Ex: contact@tedisun.com">
-            </div>
+                <div class="prh-form-group">
+                    <label for="prh_lead_first_name"><?php esc_html_e( 'Votre Prénom', 'presellia-resource-hub' ); ?></label>
+                    <input type="text" id="prh_lead_first_name" required placeholder="Ex: Rodrigue">
+                </div>
 
-            <div class="prh-form-group">
-                <label for="prh_lead_phone"><?php esc_html_e( 'Numéro WhatsApp / Téléphone (Optionnel)', 'presellia-resource-hub' ); ?></label>
-                <input type="tel" id="prh_lead_phone" placeholder="Ex: +225 07 00 00 00 00">
-            </div>
+                <div class="prh-form-group">
+                    <label for="prh_lead_email"><?php esc_html_e( 'Votre Email Professionnel', 'presellia-resource-hub' ); ?></label>
+                    <input type="email" id="prh_lead_email" required placeholder="Ex: contact@tedisun.com">
+                </div>
 
-            <button type="submit" class="prh-form-submit"><?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?></button>
-        </form>
+                <div class="prh-form-group">
+                    <label for="prh_lead_phone"><?php esc_html_e( 'Numéro WhatsApp / Téléphone (Optionnel)', 'presellia-resource-hub' ); ?></label>
+                    <input type="tel" id="prh_lead_phone" placeholder="Ex: +225 07 00 00 00 00">
+                </div>
+
+                <button type="submit" class="prh-form-submit"><?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?></button>
+            </form>
+        <?php endif; ?>
     </div>
 </div>
 
