@@ -246,7 +246,7 @@ class PRH_Api {
 
         $post_data = [
             'post_type'   => PRH_Cpt::POST_TYPE,
-            'post_status' => ! empty( $params['status'] ) ? sanitize_key( $params['status'] ) : 'publish',
+            'post_status' => in_array( $params['status'] ?? '', [ 'publish', 'draft', 'pending', 'private' ], true ) ? $params['status'] : 'publish',
         ];
 
         if ( ! empty( $params['title'] ) ) {

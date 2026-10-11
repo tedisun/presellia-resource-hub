@@ -79,6 +79,8 @@
             var email     = $('#prh_lead_email').val().trim();
             var phone     = $('#prh_lead_phone').val().trim();
             var resId     = $('#prh-modal-resource-id').val();
+            var consent   = $('#prh_lead_consent').is(':checked') ? '1' : '0';
+            var website   = $('#prh_lead_website').val() || '';
 
             if (!email) {
                 $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">Veuillez entrer une adresse email.</div>').show();
@@ -98,7 +100,9 @@
                     first_name: firstName,
                     email: email,
                     phone: phone,
-                    resource_id: resId
+                    resource_id: resId,
+                    consent: consent,
+                    prh_lead_website: website
                 },
                 success: function(response) {
                     if (response.success) {

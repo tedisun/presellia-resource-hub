@@ -210,28 +210,8 @@ function prh_get_single_svg( string $cat_slug ): string {
             $offer_title = ! empty( $offer_custom_title ) ? $offer_custom_title : $product->get_name();
             $offer_desc  = ! empty( $offer_custom_desc ) ? $offer_custom_desc : wp_strip_all_tags( $product->get_short_description() );
             $checkout_url = add_query_arg( 'add-to-cart', $linked_product_id, function_exists( 'wc_get_checkout_url' ) ? wc_get_checkout_url() : wc_get_cart_url() );
-
-            // Calcul du prix secondaire (Euro / CFA)
-            $current_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'XOF';
-            $product_price    = (float) $product->get_price();
-            $cfa_rate_to_eur  = 0.00152449;
-
-            global $WOOCS;
-            if ( isset( $WOOCS ) && method_exists( $WOOCS, 'get_currencies' ) ) {
-                $currencies = $WOOCS->get_currencies();
-                if ( ! empty( $currencies['EUR']['rate'] ) ) {
-                    $cfa_rate_to_eur = (float) $currencies['EUR']['rate'];
-                }
-            }
-
-            $secondary_price_text = '';
-            if ( 'EUR' === $current_currency ) {
-                $cfa_calc = round( $product_price / $cfa_rate_to_eur );
-                $secondary_price_text = sprintf( __( 'soit env. %s CFA', 'presellia-resource-hub' ), number_format( $cfa_calc, 0, ',', ' ' ) );
-            } else {
-                $eur_calc = round( $product_price * $cfa_rate_to_eur, 2 );
-                $secondary_price_text = sprintf( __( 'soit env. %s €', 'presellia-resource-hub' ), number_format( $eur_calc, 2, ',', ' ' ) );
-            }
+            // Pas de prix secondaire calculé ici : il serait figé dans le cache de page
+            // et ne suivrait pas le sélecteur de devises. wc_price() suffit.
             ?>
             <section class="prh-offer-box">
                 <span class="prh-offer-tag"><?php echo esc_html( $offer_badge ); ?></span>
@@ -253,9 +233,6 @@ function prh_get_single_svg( string $cat_slug ): string {
                             <div class="prh-offer-price-old"><?php echo wc_price( $product->get_regular_price() ); ?></div>
                         <?php endif; ?>
                         <div class="prh-offer-price-now"><?php echo wc_price( $product->get_price() ); ?></div>
-                        <?php if ( ! empty( $secondary_price_text ) ) : ?>
-                            <div class="prh-offer-price-secondary"><?php echo esc_html( $secondary_price_text ); ?></div>
-                        <?php endif; ?>
                         <a href="<?php echo esc_url( $checkout_url ); ?>" class="prh-offer-btn">
                             <?php esc_html_e( 'Obtenir ma licence →', 'presellia-resource-hub' ); ?>
                         </a>
@@ -287,17 +264,28 @@ function prh_get_single_svg( string $cat_slug ): string {
 
                 <div class="prh-form-group">
                     <label for="prh_lead_first_name"><?php esc_html_e( 'Votre Prénom', 'presellia-resource-hub' ); ?></label>
-                    <input type="text" id="prh_lead_first_name" required placeholder="Ex: Rodrigue">
+                    <input type="text" id="prh_lead_first_name" required placeholder="<?php esc_attr_e( 'Votre prénom', 'presellia-resource-hub' ); ?>">
                 </div>
 
                 <div class="prh-form-group">
                     <label for="prh_lead_email"><?php esc_html_e( 'Votre Email Professionnel', 'presellia-resource-hub' ); ?></label>
-                    <input type="email" id="prh_lead_email" required placeholder="Ex: contact@tedisun.com">
+                    <input type="email" id="prh_lead_email" required placeholder="vous@exemple.com">
                 </div>
 
                 <div class="prh-form-group">
                     <label for="prh_lead_phone"><?php esc_html_e( 'Numéro WhatsApp / Téléphone (Optionnel)', 'presellia-resource-hub' ); ?></label>
                     <input type="tel" id="prh_lead_phone" placeholder="Ex: +225 07 00 00 00 00">
+                </div>
+
+                <!-- Champ piège anti-robots : invisible pour les humains, rempli par les bots -->
+                <div class="prh-hp" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
+                    <label for="prh_lead_website">Site web</label>
+                    <input type="text" id="prh_lead_website" name="prh_lead_website" tabindex="-1" autocomplete="off" value="">
+                </div>
+
+                <div class="prh-form-group prh-form-consent" style="display: flex; align-items: flex-start; gap: 8px;">
+                    <input type="checkbox" id="prh_lead_consent" value="1" checked style="margin-top: 3px; width: auto; flex-shrink: 0;">
+                    <label for="prh_lead_consent" style="font-weight: 400; font-size: 13px; line-height: 1.45; margin: 0;"><?php esc_html_e( 'J\'accepte de recevoir les conseils et offres de Presellia par email. Désinscription possible à tout moment.', 'presellia-resource-hub' ); ?></label>
                 </div>
 
                 <button type="submit" class="prh-form-submit"><?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?></button>

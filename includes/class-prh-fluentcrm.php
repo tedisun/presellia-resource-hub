@@ -21,6 +21,27 @@ class PRH_FluentCRM {
         $email       = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) );
         $resource_id = absint( $_POST['resource_id'] ?? 0 );
+        // Champ absent = ancien JS encore en cache : on garde le comportement d'avant (inscription)
+        $consent     = ! isset( $_POST['consent'] ) || '1' === $_POST['consent'];
+        $honeypot    = trim( (string) wp_unslash( $_POST['prh_lead_website'] ?? '' ) );
+
+        // Champ piège rempli = robot : on répond comme un succès, sans rien enregistrer ni livrer
+        if ( '' !== $honeypot ) {
+            PRH_Logger::warning( 'lead_honeypot', 'Soumission bloquée par le champ piège', [ 'resource_id' => $resource_id ] );
+            wp_send_json_success( [
+                'download_url' => '',
+                'message'      => __( 'Merci, votre demande a bien été prise en compte.', 'presellia-resource-hub' ),
+            ] );
+        }
+
+        // Limite par IP : 5 soumissions par fenêtre de 10 minutes
+        $rate_key = 'prh_rl_' . md5( PRH_Logger::get_client_ip() );
+        $attempts = (int) get_transient( $rate_key );
+        if ( $attempts >= 5 ) {
+            PRH_Logger::warning( 'lead_rate_limited', 'Soumission bloquée par la limite par IP', [ 'resource_id' => $resource_id ] );
+            wp_send_json_error( [ 'message' => __( 'Trop de tentatives. Merci de réessayer dans quelques minutes.', 'presellia-resource-hub' ) ] );
+        }
+        set_transient( $rate_key, $attempts + 1, 10 * MINUTE_IN_SECONDS );
 
         if ( empty( $email ) || ! is_email( $email ) ) {
             wp_send_json_error( [ 'message' => __( 'Veuillez saisir une adresse email valide.', 'presellia-resource-hub' ) ] );
@@ -33,8 +54,14 @@ class PRH_FluentCRM {
         $tag_slug     = get_post_meta( $resource_id, '_prh_crm_tag', true );
         $download_url = get_post_meta( $resource_id, '_prh_download_url', true );
 
-        // Intégration FluentCRM Pro via l'API PHP native
-        if ( function_exists( 'FluentCrmApi' ) ) {
+        // Intégration FluentCRM Pro via l'API PHP native (uniquement avec consentement)
+        if ( ! $consent ) {
+            PRH_Logger::info(
+                'lead_no_consent',
+                sprintf( 'Ressource "%s" livrée sans inscription CRM (consentement décoché)', get_the_title( $resource_id ) ),
+                [ 'resource_id' => $resource_id ]
+            );
+        } elseif ( function_exists( 'FluentCrmApi' ) ) {
             try {
                 $contact_api = FluentCrmApi( 'contacts' );
                 $tag_ids     = [];
@@ -79,7 +106,6 @@ class PRH_FluentCRM {
                     [
                         'resource_id' => $resource_id,
                         'email'       => $email,
-                        'phone'       => $phone,
                         'tag'         => $tag_slug,
                     ]
                 );

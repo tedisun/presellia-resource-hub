@@ -40,6 +40,12 @@ class PRH_Activator {
         self::create_logs_table();
         self::set_default_options();
 
+        // Une mise à jour par remplacement de fichiers ne repasse pas par activate() :
+        // on s'assure ici que la purge hebdomadaire des logs reste planifiée.
+        if ( ! wp_next_scheduled( 'prh_weekly_cleanup' ) ) {
+            wp_schedule_event( time(), 'weekly', 'prh_weekly_cleanup' );
+        }
+
         update_option( 'prh_db_version', PRH_VERSION );
     }
 

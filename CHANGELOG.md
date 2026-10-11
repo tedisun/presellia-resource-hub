@@ -4,6 +4,19 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.0.5] — 2026-10-11
+### Sécurité
+- Formulaire de déblocage : champ piège anti-robots (soumission ignorée sans livraison ni inscription CRM) et limite de 5 soumissions par IP toutes les 10 minutes.
+- API REST : `status` limité à `publish`, `draft`, `pending`, `private`.
+### Ajouté
+- Case de consentement email (cochée par défaut) dans le formulaire. Décochée : la ressource est livrée mais le contact n'est pas inscrit dans FluentCRM.
+### Modifié
+- Exemples des champs du formulaire neutres (`Votre prénom`, `vous@exemple.com`) à la place de données internes.
+- Le téléphone n'est plus enregistré dans les logs (il reste dans FluentCRM).
+- La purge hebdomadaire des logs (30 jours) est replanifiée automatiquement après une mise à jour.
+### Supprimé
+- Prix secondaire `soit env. … €/CFA` dans l'encart produit : calculé côté serveur, il restait figé dans le cache de page et ne suivait pas le sélecteur de devises.
+
 ## [1.0.4] — 2026-09-16
 ### Ajouté
 - Sélecteur dynamique de formulaires Fluent Forms / FluentCRM dans l'écran d'édition des ressources (liste déroulante automatique avec ID et titre des formulaires sans aucun copier-coller de shortcode).
