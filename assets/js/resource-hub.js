@@ -51,6 +51,48 @@
         var $form = $('#prh-lead-form');
         var $submitBtn = $form.find('.prh-form-submit');
         var $feedback = $('#prh-modal-feedback');
+        var $success = $('#prh-modal-success');
+        var STORE_KEY = 'prh_unlocked';
+
+        // Mémoire locale (par navigateur) des ressources déjà débloquées : le visiteur qui revient
+        // n'a pas à remplir le formulaire une deuxième fois. Peut être vide ou bloquée : on ignore.
+        function readUnlocked() {
+            try { return JSON.parse(window.localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (err) { return {}; }
+        }
+        function rememberUnlocked(resId, url, label) {
+            try {
+                var all = readUnlocked();
+                all[resId] = { url: url, label: label };
+                window.localStorage.setItem(STORE_KEY, JSON.stringify(all));
+            } catch (err) { /* stockage indisponible */ }
+        }
+        function isSafeUrl(url) {
+            return typeof url === 'string' && /^https?:\/\//i.test(url);
+        }
+
+        // Ressource déjà débloquée sur ce navigateur : le bouton ouvre directement l'accès.
+        $('.prh-open-gated-modal').each(function() {
+            var saved = readUnlocked()[$(this).data('resource-id')];
+            if (saved && isSafeUrl(saved.url)) {
+                var $link = $('<a class="prh-action-btn" target="_blank" rel="noopener"></a>')
+                    .attr('href', saved.url)
+                    .text(saved.label || 'Ouvrir la ressource');
+                $(this).replaceWith($link);
+            }
+        });
+
+        function showSuccess(data) {
+            var url = data.download_url;
+            $feedback.hide().empty();
+            $form.hide();
+            $('#prh-success-message').text('✓ ' + (data.message || 'C\'est débloqué.'));
+            if (isSafeUrl(url)) {
+                $('#prh-success-link').attr('href', url).text((data.cta_label || 'Ouvrir la ressource') + ' →').show();
+            } else {
+                $('#prh-success-link').hide();
+            }
+            $success.show();
+        }
 
         $(document).on('click', '.prh-open-gated-modal', function(e) {
             e.preventDefault();
@@ -106,20 +148,13 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        var downloadUrl = response.data.download_url;
-                        $feedback.html('<div style="color: #10b981; font-weight: 700; margin-bottom: 16px;">✓ ' + response.data.message + '</div>').show();
-                        $submitBtn.text('✓ Accès débloqué !');
-
-                        if (downloadUrl) {
-                            setTimeout(function() {
-                                window.location.href = downloadUrl;
-                            }, 800);
+                        // Pas de redirection automatique : le visiteur ouvre l'accès dans un nouvel onglet
+                        // et garde cette page (et l'offre recommandée) sous la main.
+                        showSuccess(response.data || {});
+                        if (response.data && isSafeUrl(response.data.download_url)) {
+                            rememberUnlocked(resId, response.data.download_url, response.data.cta_label);
                         }
-
-                        setTimeout(function() {
-                            $backdrop.fadeOut(300);
-                            $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');
-                        }, 3000);
+                        $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');
                     } else {
                         $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">' + (response.data.message || 'Une erreur est survenue.') + '</div>').show();
                         $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');

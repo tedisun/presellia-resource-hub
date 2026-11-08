@@ -5,7 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Gestionnaire AJAX pour la capture de leads et l'intégration native avec FluentCRM Pro.
+ * Gestionnaire AJAX pour la capture de leads, la livraison de la ressource
+ * et l'intégration native avec FluentCRM Pro.
  */
 class PRH_FluentCRM {
 
@@ -44,90 +45,161 @@ class PRH_FluentCRM {
         set_transient( $rate_key, $attempts + 1, 10 * MINUTE_IN_SECONDS );
 
         if ( empty( $email ) || ! is_email( $email ) ) {
-            wp_send_json_error( [ 'message' => __( 'Veuillez saisir une adresse email valide.', 'presellia-resource-hub' ) ] );
+            wp_send_json_error( [ 'message' => __( 'Veuillez saisir une adresse e-mail valide.', 'presellia-resource-hub' ) ] );
         }
 
         if ( ! $resource_id || get_post_type( $resource_id ) !== PRH_Cpt::POST_TYPE ) {
             wp_send_json_error( [ 'message' => __( 'Ressource introuvable ou invalide.', 'presellia-resource-hub' ) ] );
         }
 
-        $tag_slug     = get_post_meta( $resource_id, '_prh_crm_tag', true );
-        $download_url = get_post_meta( $resource_id, '_prh_download_url', true );
+        // Une ressource non publiée ne se débloque que pour un éditeur connecté (tests avant publication).
+        if ( 'publish' !== get_post_status( $resource_id ) && ! current_user_can( 'edit_post', $resource_id ) ) {
+            wp_send_json_error( [ 'message' => __( 'Ressource introuvable ou invalide.', 'presellia-resource-hub' ) ] );
+        }
 
-        // Intégration FluentCRM Pro via l'API PHP native (uniquement avec consentement)
+        $tag_slug     = (string) get_post_meta( $resource_id, '_prh_crm_tag', true );
+        $download_url = (string) get_post_meta( $resource_id, '_prh_download_url', true );
+
+        if ( '' === $download_url ) {
+            PRH_Logger::error( 'resource_without_url', 'Ressource débloquée sans lien d\'accès configuré', [ 'resource_id' => $resource_id ] );
+        }
+
         if ( ! $consent ) {
             PRH_Logger::info(
                 'lead_no_consent',
                 sprintf( 'Ressource "%s" livrée sans inscription CRM (consentement décoché)', get_the_title( $resource_id ) ),
                 [ 'resource_id' => $resource_id ]
             );
-        } elseif ( function_exists( 'FluentCrmApi' ) ) {
-            try {
-                $contact_api = FluentCrmApi( 'contacts' );
-                $tag_ids     = [];
-
-                if ( ! empty( $tag_slug ) ) {
-                    if ( class_exists( '\FluentCrm\App\Models\Tag' ) ) {
-                        $existing_tag = \FluentCrm\App\Models\Tag::where( 'slug', sanitize_title( $tag_slug ) )
-                            ->orWhere( 'title', $tag_slug )
-                            ->first();
-
-                        if ( $existing_tag ) {
-                            $tag_ids[] = $existing_tag->id;
-                        } else {
-                            $new_tag = \FluentCrm\App\Models\Tag::create( [
-                                'title' => sanitize_text_field( $tag_slug ),
-                                'slug'  => sanitize_title( $tag_slug ),
-                            ] );
-                            if ( $new_tag && isset( $new_tag->id ) ) {
-                                $tag_ids[] = $new_tag->id;
-                            }
-                        }
-                    }
-                }
-
-                $contact_payload = [
-                    'first_name' => $first_name,
-                    'email'      => $email,
-                    'phone'      => $phone,
-                    'status'     => 'subscribed',
-                    'source'     => 'Presellia Resource Hub',
-                ];
-
-                if ( ! empty( $tag_ids ) ) {
-                    $contact_payload['tags'] = $tag_ids;
-                }
-
-                $contact = $contact_api->createOrUpdate( $contact_payload );
-
-                PRH_Logger::info(
-                    'lead_captured',
-                    sprintf( 'Lead enregistré avec succès pour "%s" (%s)', get_the_title( $resource_id ), $email ),
-                    [
-                        'resource_id' => $resource_id,
-                        'email'       => $email,
-                        'tag'         => $tag_slug,
-                    ]
-                );
-            } catch ( \Throwable $e ) {
-                PRH_Logger::error(
-                    'crm_sync_failed',
-                    'Échec de la synchronisation avec FluentCRM: ' . $e->getMessage(),
-                    [ 'exception' => $e->getMessage(), 'email' => $email ]
-                );
-            }
         } else {
-            // FluentCRM absent ou inactif : on enregistre tout de même l'événement dans le logger
+            self::sync_contact( $resource_id, $email, $first_name, $phone, $tag_slug );
+        }
+
+        // E-mail de livraison : toujours envoyé, le visiteur a demandé la ressource.
+        $email_sent = PRH_Delivery::send( $resource_id, $email, $first_name, $download_url );
+
+        wp_send_json_success( [
+            'download_url' => esc_url_raw( $download_url ),
+            'cta_label'    => PRH_Delivery::get_cta_label( $resource_id ),
+            'email_sent'   => $email_sent,
+            'message'      => $email_sent
+                ? __( 'C\'est débloqué. Nous vous avons aussi envoyé le lien par e-mail.', 'presellia-resource-hub' )
+                : __( 'C\'est débloqué. Ouvrez la ressource avec le bouton ci-dessous.', 'presellia-resource-hub' ),
+        ] );
+    }
+
+    /**
+     * Crée ou met à jour le contact FluentCRM, applique le tag de la ressource et laisse une note.
+     *
+     * Règles :
+     * - un contact désinscrit, en rebond ou en plainte n'est jamais réinscrit ;
+     * - un champ vide du formulaire n'efface pas une valeur déjà connue (prénom, téléphone) ;
+     * - le tag est attaché après l'enregistrement, ce qui déclenche les automatisations
+     *   FluentCRM « tag appliqué » (une seule fois par contact et par tag).
+     */
+    private static function sync_contact( int $resource_id, string $email, string $first_name, string $phone, string $tag_slug ): void {
+        if ( ! function_exists( 'FluentCrmApi' ) ) {
             PRH_Logger::warning(
                 'fluentcrm_inactive',
                 sprintf( 'Capture lead effectuée mais FluentCRM n\'est pas actif (%s)', $email ),
                 [ 'resource_id' => $resource_id, 'email' => $email ]
             );
+            return;
         }
 
-        wp_send_json_success( [
-            'download_url' => esc_url_raw( $download_url ),
-            'message'      => __( 'Accès débloqué ! Le téléchargement va démarrer automatiquement.', 'presellia-resource-hub' ),
-        ] );
+        try {
+            $contact_api = FluentCrmApi( 'contacts' );
+            $existing    = $contact_api->getContact( $email );
+            $blocked     = [ 'unsubscribed', 'bounced', 'complained', 'spammed' ];
+
+            $payload = [
+                'email'  => $email,
+                'source' => 'Presellia Resource Hub',
+            ];
+            if ( '' !== $first_name ) {
+                $payload['first_name'] = $first_name;
+            }
+            if ( '' !== $phone ) {
+                $payload['phone'] = $phone;
+            }
+            if ( ! $existing || ! in_array( $existing->status, $blocked, true ) ) {
+                $payload['status'] = 'subscribed';
+            }
+
+            $contact = $contact_api->createOrUpdate( $payload );
+            if ( ! $contact || empty( $contact->id ) ) {
+                throw new \RuntimeException( 'createOrUpdate n\'a renvoyé aucun contact' );
+            }
+
+            $tag_id = self::resolve_tag_id( $tag_slug );
+            if ( $tag_id ) {
+                $contact->attachTags( [ $tag_id ] );
+            }
+
+            self::add_note( (int) $contact->id, $resource_id );
+
+            PRH_Logger::info(
+                'lead_captured',
+                sprintf( 'Lead enregistré pour "%s"', get_the_title( $resource_id ) ),
+                [
+                    'resource_id' => $resource_id,
+                    'email'       => $email,
+                    'tag'         => $tag_slug,
+                    'contact_id'  => (int) $contact->id,
+                    'new_contact' => ! $existing,
+                    'status'      => $payload['status'] ?? ( $existing->status ?? '' ),
+                ]
+            );
+        } catch ( \Throwable $e ) {
+            PRH_Logger::error(
+                'crm_sync_failed',
+                'Échec de la synchronisation avec FluentCRM: ' . $e->getMessage(),
+                [ 'resource_id' => $resource_id, 'email' => $email ]
+            );
+        }
+    }
+
+    /**
+     * Retrouve le tag par slug ou par titre, le crée s'il n'existe pas.
+     */
+    private static function resolve_tag_id( string $tag_slug ): int {
+        $tag_slug = trim( $tag_slug );
+        if ( '' === $tag_slug || ! class_exists( '\FluentCrm\App\Models\Tag' ) ) {
+            return 0;
+        }
+
+        $tag = \FluentCrm\App\Models\Tag::where( 'slug', sanitize_title( $tag_slug ) )
+            ->orWhere( 'title', $tag_slug )
+            ->first();
+
+        if ( ! $tag ) {
+            $tag = \FluentCrm\App\Models\Tag::create( [
+                'title' => sanitize_text_field( $tag_slug ),
+                'slug'  => sanitize_title( $tag_slug ),
+            ] );
+        }
+
+        return ( $tag && ! empty( $tag->id ) ) ? (int) $tag->id : 0;
+    }
+
+    /**
+     * Note visible dans la fiche du contact : quelle ressource, quand. Non bloquant.
+     */
+    private static function add_note( int $contact_id, int $resource_id ): void {
+        if ( ! class_exists( '\FluentCrm\App\Models\SubscriberNote' ) ) {
+            return;
+        }
+
+        try {
+            \FluentCrm\App\Models\SubscriberNote::create( [
+                'subscriber_id' => $contact_id,
+                'type'          => 'note',
+                'title'         => 'Ressource téléchargée',
+                'description'   => sprintf( '%s — %s', get_the_title( $resource_id ), get_permalink( $resource_id ) ),
+                'created_by'    => get_current_user_id(),
+                'status'        => 'open',
+            ] );
+        } catch ( \Throwable $e ) {
+            PRH_Logger::warning( 'crm_note_failed', 'Note FluentCRM non créée: ' . $e->getMessage(), [ 'contact_id' => $contact_id ] );
+        }
     }
 }

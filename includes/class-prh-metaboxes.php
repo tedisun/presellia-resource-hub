@@ -104,6 +104,9 @@ class PRH_Metaboxes {
         $available_forms = self::get_fluent_forms();
         $subtitle       = get_post_meta( $post->ID, '_prh_subtitle', true );
         $value_stack    = get_post_meta( $post->ID, '_prh_value_stack', true );
+        $cta_label      = get_post_meta( $post->ID, '_prh_cta_label', true );
+        $email_subject  = get_post_meta( $post->ID, '_prh_email_subject', true );
+        $email_body     = get_post_meta( $post->ID, '_prh_email_body', true );
         ?>
         <div class="prh-metabox-grid">
             <div class="prh-field full-width">
@@ -179,6 +182,21 @@ class PRH_Metaboxes {
                 </p>
             </div>
 
+            <div class="prh-field full-width" id="prh_delivery_fields">
+                <h4 style="margin: 8px 0 4px;"><?php esc_html_e( 'Livraison après le formulaire', 'presellia-resource-hub' ); ?></h4>
+                <p class="description" style="margin-top: 0;"><?php esc_html_e( 'Après le formulaire, le visiteur voit un bouton vers le lien ci-dessus et reçoit le même lien par e-mail (même s\'il refuse les e-mails marketing). Variables : {prenom}, {titre}, {lien}.', 'presellia-resource-hub' ); ?></p>
+
+                <label for="prh_cta_label"><strong><?php esc_html_e( 'Texte du bouton d\'accès', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_cta_label" name="prh_cta_label" value="<?php echo esc_attr( $cta_label ); ?>" class="regular-text" placeholder="<?php echo esc_attr( PRH_Delivery::DEFAULT_CTA_LABEL ); ?>" />
+
+                <label for="prh_email_subject" style="display: block; margin-top: 12px;"><strong><?php esc_html_e( 'Objet de l\'e-mail de livraison', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_email_subject" name="prh_email_subject" value="<?php echo esc_attr( $email_subject ); ?>" class="large-text" placeholder="<?php echo esc_attr( PRH_Delivery::DEFAULT_SUBJECT ); ?>" />
+
+                <label for="prh_email_body" style="display: block; margin-top: 12px;"><strong><?php esc_html_e( 'Texte de l\'e-mail de livraison', 'presellia-resource-hub' ); ?></strong></label>
+                <textarea id="prh_email_body" name="prh_email_body" rows="8" class="large-text" placeholder="<?php echo esc_attr( PRH_Delivery::DEFAULT_BODY ); ?>"><?php echo esc_textarea( $email_body ); ?></textarea>
+                <p class="description"><?php esc_html_e( 'Une ligne vide sépare deux paragraphes. Le bouton vert est placé automatiquement après le deuxième paragraphe. Laissez vide pour le texte par défaut.', 'presellia-resource-hub' ); ?></p>
+            </div>
+
             <div class="prh-field full-width">
                 <label for="prh_value_stack"><strong><?php esc_html_e( 'Ce que contient la ressource (Value Stack / Points clés)', 'presellia-resource-hub' ); ?></strong></label>
                 <textarea id="prh_value_stack" name="prh_value_stack" rows="4" class="large-text" placeholder="Entrez un point par ligne :&#10;Diagnostic automatisé des clés d'enregistrement&#10;Nettoyage des restes d'anciennes installations Office&#10;Rapport d'intégrité du système"><?php echo esc_textarea( $value_stack ); ?></textarea>
@@ -243,6 +261,9 @@ class PRH_Metaboxes {
             '_prh_fluent_form_id'      => 'absint',
             '_prh_subtitle'            => 'sanitize_text_field',
             '_prh_value_stack'         => 'sanitize_textarea_field',
+            '_prh_cta_label'           => 'sanitize_text_field',
+            '_prh_email_subject'       => 'sanitize_text_field',
+            '_prh_email_body'          => 'sanitize_textarea_field',
             '_prh_linked_product_id'   => 'absint',
             '_prh_offer_badge'         => 'sanitize_text_field',
             '_prh_offer_custom_title'  => 'sanitize_text_field',

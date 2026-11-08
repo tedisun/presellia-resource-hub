@@ -76,6 +76,17 @@ Puis :
 | `_prh_offer_badge` | Ressource | Badge promo de l'offre (ex: "OFFRE COMPLÉMENTAIRE RECOMMANDÉE") |
 | `_prh_offer_custom_title`| Ressource | Titre surchargé pour l'offre (ou nom du produit par défaut) |
 | `_prh_value_stack` | Ressource | Points clés / livrables (séparés par saut de ligne) |
+| `_prh_cta_label` | Ressource | Texte du bouton d'accès après le formulaire et dans l'e-mail (défaut : « Ouvrir la ressource ») |
+| `_prh_email_subject` | Ressource | Objet de l'e-mail de livraison (variables `{prenom}`, `{titre}`, `{lien}`) |
+| `_prh_email_body` | Ressource | Texte de l'e-mail de livraison, paragraphes séparés par une ligne vide ; bouton inséré après le 2e paragraphe |
+
+### Livraison d'une ressource `gated` (depuis 1.1.0)
+
+1. Formulaire → `PRH_FluentCRM::handle_lead_capture()` (nonce, champ piège, 5 envois / IP / 10 min).
+2. Consentement coché → contact FluentCRM créé ou mis à jour (jamais réinscrit s'il est désinscrit), tag attaché, note ajoutée.
+3. Toujours → `PRH_Delivery::send()` envoie le lien par e-mail (transactionnel).
+4. Réponse → la modale affiche un bouton vers `_prh_download_url` (nouvel onglet). Pas de redirection.
+5. Les automatisations de relance se construisent dans FluentCRM sur le déclencheur « tag appliqué » ; le plugin ne gère que le premier e-mail.
 
 ---
 

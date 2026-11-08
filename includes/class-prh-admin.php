@@ -41,6 +41,7 @@ class PRH_Admin {
             }
             update_option( 'prh_hub_title', $title );
             update_option( 'prh_hub_subtitle', $sub );
+            update_option( 'prh_reply_to', sanitize_email( wp_unslash( $_POST['prh_reply_to'] ?? '' ) ) );
 
             add_settings_error( 'prh_notices', 'prh_saved', __( 'Réglages enregistrés avec succès.', 'presellia-resource-hub' ), 'updated' );
         }
@@ -61,8 +62,8 @@ class PRH_Admin {
 
     public function render_settings_page(): void {
         $api_key   = get_option( 'prh_api_key', '' );
-        $hub_title = get_option( 'prh_hub_title', 'Espace Ressources & Téléchargements' );
-        $hub_sub   = get_option( 'prh_hub_subtitle', 'Tous les outils de diagnostic, guides d’experts et installateurs officiels certifiés Presellia.' );
+        $hub_title = get_option( 'prh_hub_title', PRH_Activator::DEFAULT_HUB_TITLE );
+        $hub_sub   = get_option( 'prh_hub_subtitle', PRH_Activator::DEFAULT_HUB_SUBTITLE );
 
         $fluentcrm_active = function_exists( 'FluentCrmApi' );
         $wc_active        = class_exists( 'WooCommerce' );
@@ -92,6 +93,13 @@ class PRH_Admin {
                                 <th scope="row"><label for="prh_hub_subtitle"><?php esc_html_e( 'Sous-titre du Hub', 'presellia-resource-hub' ); ?></label></th>
                                 <td>
                                     <textarea name="prh_hub_subtitle" id="prh_hub_subtitle" rows="2" class="large-text"><?php echo esc_textarea( $hub_sub ); ?></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="prh_reply_to"><?php esc_html_e( 'Adresse de réponse des e-mails', 'presellia-resource-hub' ); ?></label></th>
+                                <td>
+                                    <input name="prh_reply_to" type="email" id="prh_reply_to" value="<?php echo esc_attr( get_option( 'prh_reply_to', '' ) ); ?>" class="regular-text" style="width: 100%;" placeholder="support@presellia.com">
+                                    <p class="description"><?php esc_html_e( 'Quand un visiteur répond à l\'e-mail de livraison, sa réponse arrive ici. Vide = adresse d\'envoi du site.', 'presellia-resource-hub' ); ?></p>
                                 </td>
                             </tr>
                             <tr>

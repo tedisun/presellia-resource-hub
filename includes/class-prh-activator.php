@@ -9,6 +9,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class PRH_Activator {
 
+    public const DEFAULT_HUB_TITLE    = 'Ressources gratuites';
+    public const DEFAULT_HUB_SUBTITLE = 'Outils, guides de dépannage et modèles pour régler un problème d’activation ou faire le point sur vos licences.';
+
+    /** Textes par défaut des versions ≤ 1.0.5, remplacés à la mise à jour s'ils n'ont pas été personnalisés. */
+    private const LEGACY_HUB_TITLE    = 'Espace Ressources & Téléchargements';
+    private const LEGACY_HUB_SUBTITLE = 'Tous les outils de diagnostic, guides d’experts et installateurs officiels certifiés Presellia.';
+
     /**
      * Exécuté lors de l'activation du plugin.
      */
@@ -46,7 +53,22 @@ class PRH_Activator {
             wp_schedule_event( time(), 'weekly', 'prh_weekly_cleanup' );
         }
 
+        self::migrate_hub_texts();
+
         update_option( 'prh_db_version', PRH_VERSION );
+    }
+
+    /**
+     * Remplace les anciens titre/sous-titre par défaut, sans toucher aux textes personnalisés.
+     */
+    private static function migrate_hub_texts(): void {
+        if ( get_option( 'prh_hub_title' ) === self::LEGACY_HUB_TITLE ) {
+            update_option( 'prh_hub_title', self::DEFAULT_HUB_TITLE );
+        }
+
+        if ( get_option( 'prh_hub_subtitle' ) === self::LEGACY_HUB_SUBTITLE ) {
+            update_option( 'prh_hub_subtitle', self::DEFAULT_HUB_SUBTITLE );
+        }
     }
 
     /**
@@ -99,11 +121,11 @@ class PRH_Activator {
         }
 
         if ( ! get_option( 'prh_hub_title' ) ) {
-            add_option( 'prh_hub_title', 'Espace Ressources & Téléchargements' );
+            add_option( 'prh_hub_title', self::DEFAULT_HUB_TITLE );
         }
 
         if ( ! get_option( 'prh_hub_subtitle' ) ) {
-            add_option( 'prh_hub_subtitle', 'Tous les outils de diagnostic, guides d’experts et installateurs officiels certifiés Presellia.' );
+            add_option( 'prh_hub_subtitle', self::DEFAULT_HUB_SUBTITLE );
         }
     }
 }

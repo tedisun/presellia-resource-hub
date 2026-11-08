@@ -4,6 +4,20 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.1.0] — 2026-11-08
+### Ajouté
+- Livraison par e-mail : après le formulaire, le visiteur reçoit le lien de la ressource par e-mail (`wp_mail`, donc le SMTP du site), même s'il a décoché le consentement marketing. Objet, texte et bouton modifiables par ressource (`_prh_email_subject`, `_prh_email_body`, `_prh_cta_label`), variables `{prenom}`, `{titre}`, `{lien}`.
+- Réglage « Adresse de réponse des e-mails » (`prh_reply_to`).
+- Panneau de succès dans la modale : bouton d'accès qui s'ouvre dans un nouvel onglet, la page et l'offre recommandée restent affichées. Plus de redirection automatique.
+- Mémoire locale des ressources débloquées : un visiteur qui revient sur le même navigateur accède directement au lien.
+- FluentCRM : note « Ressource téléchargée » sur la fiche du contact.
+- API REST : champs `cta_label`, `email_subject`, `email_body`.
+### Modifié
+- FluentCRM : un contact désinscrit, en rebond ou en plainte n'est plus réinscrit ; un prénom ou téléphone vide n'efface plus la valeur connue ; le tag est attaché après l'enregistrement (déclenche les automatisations « tag appliqué »).
+- Une ressource non publiée ne se débloque que pour un éditeur connecté (tests en brouillon).
+- Textes du formulaire : « Votre adresse e-mail » au lieu de « Votre Email Professionnel », mention de l'envoi par e-mail.
+- Inclut les changements préparés pour 1.0.6 : refonte de l'archive `/ressources/`, nouveaux titre et sous-titre par défaut du hub, titre d'onglet correct avec Yoast.
+
 ## [1.0.5] — 2026-10-11
 ### Sécurité
 - Formulaire de déblocage : champ piège anti-robots (soumission ignorée sans livraison ni inscription CRM) et limite de 5 soumissions par IP toutes les 10 minutes.

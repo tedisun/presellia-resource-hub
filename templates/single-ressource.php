@@ -185,12 +185,12 @@ function prh_get_single_svg( string $cat_slug ): string {
     <section class="prh-action-box">
         <?php if ( 'gated' === $access_type ) : ?>
             <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 10px; color: #0f172a;"><?php esc_html_e( 'Accédez gratuitement à cette ressource', 'presellia-resource-hub' ); ?></h2>
-            <p style="color: #64748b; font-size: 15px; margin: 0 0 24px;"><?php esc_html_e( 'Renseignez vos coordonnées pour débloquer votre accès immédiat et recevoir les futures mises à jour.', 'presellia-resource-hub' ); ?></p>
+            <p style="color: #64748b; font-size: 15px; margin: 0 0 24px;"><?php esc_html_e( 'Laissez votre prénom et votre e-mail : l\'accès s\'ouvre tout de suite, et nous vous envoyons aussi le lien par e-mail.', 'presellia-resource-hub' ); ?></p>
             <button type="button" class="prh-action-btn prh-open-gated-modal" data-resource-id="<?php echo esc_attr( $post_id ); ?>" data-resource-title="<?php echo esc_attr( get_the_title() ); ?>">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?>
             </button>
-            <div class="prh-action-guarantee"><?php esc_html_e( '✓ Téléchargement instantané · Accès libre garanti', 'presellia-resource-hub' ); ?></div>
+            <div class="prh-action-guarantee"><?php esc_html_e( '✓ Accès immédiat · Lien envoyé aussi par e-mail', 'presellia-resource-hub' ); ?></div>
         <?php else : ?>
             <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 10px; color: #0f172a;"><?php esc_html_e( 'Téléchargement Direct', 'presellia-resource-hub' ); ?></h2>
             <p style="color: #64748b; font-size: 15px; margin: 0 0 24px;"><?php esc_html_e( 'Cette ressource officielle est mise à disposition gratuitement par l\'équipe technique Presellia.', 'presellia-resource-hub' ); ?></p>
@@ -268,7 +268,7 @@ function prh_get_single_svg( string $cat_slug ): string {
                 </div>
 
                 <div class="prh-form-group">
-                    <label for="prh_lead_email"><?php esc_html_e( 'Votre Email Professionnel', 'presellia-resource-hub' ); ?></label>
+                    <label for="prh_lead_email"><?php esc_html_e( 'Votre adresse e-mail', 'presellia-resource-hub' ); ?></label>
                     <input type="email" id="prh_lead_email" required placeholder="vous@exemple.com">
                 </div>
 
@@ -290,6 +290,13 @@ function prh_get_single_svg( string $cat_slug ): string {
 
                 <button type="submit" class="prh-form-submit"><?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?></button>
             </form>
+
+            <!-- Après validation : bouton d'accès (nouvel onglet) pour garder cette page et l'offre visibles -->
+            <div id="prh-modal-success" style="display: none; text-align: center;">
+                <p id="prh-success-message" style="color: #047857; font-weight: 700; margin: 0 0 18px;"></p>
+                <a id="prh-success-link" href="#" class="prh-form-submit" target="_blank" rel="noopener" style="display: block; text-decoration: none; text-align: center;"></a>
+                <p style="color: #64748b; font-size: 13px; margin: 14px 0 0;"><?php esc_html_e( 'Pas d\'e-mail d\'ici quelques minutes ? Regardez dans les spams ou l\'onglet Promotions.', 'presellia-resource-hub' ); ?></p>
+            </div>
         <?php endif; ?>
     </div>
 </div>
