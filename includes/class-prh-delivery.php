@@ -26,7 +26,8 @@ class PRH_Delivery {
 
     public const DEFAULT_SUBJECT = '{prenom}, voici votre accès : {titre}';
 
-    public const DEFAULT_BODY = "Bonjour {prenom},\n\nMerci pour votre demande. Voici le lien vers « {titre} ». Gardez cet e-mail : le lien reste valable, vous pourrez y revenir quand vous voudrez.\n\nUne question en chemin ? Répondez simplement à cet e-mail, on vous aide.\n\nL'équipe Presellia";
+    // Court par principe : un e-mail de livraison se lit en 5 secondes et arrive mieux en boîte principale.
+    public const DEFAULT_BODY = "Bonjour {prenom},\n\nVoici le lien vers « {titre} ».\n\nUne question ? Répondez simplement à cet e-mail.\n\nL'équipe Presellia";
 
     /**
      * Libellé du bouton d'accès pour une ressource.
@@ -69,7 +70,14 @@ class PRH_Delivery {
             $headers[] = 'Reply-To: Presellia <' . $reply_to . '>';
         }
 
+        // Version texte jointe à la version HTML : un e-mail « HTML seul » est mal noté par les filtres.
+        $text      = wp_strip_all_tags( $body_text ) . "\n\n" . self::get_cta_label( $resource_id ) . ' : ' . $access_url . "\n";
+        $alt_body  = static function ( $phpmailer ) use ( $text ) {
+            $phpmailer->AltBody = $text;
+        };
+        add_action( 'phpmailer_init', $alt_body );
         $sent = (bool) wp_mail( $email, $subject, $html, $headers );
+        remove_action( 'phpmailer_init', $alt_body );
 
         if ( $sent ) {
             PRH_Logger::info(

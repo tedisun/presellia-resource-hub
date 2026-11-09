@@ -14,6 +14,9 @@ class PRH_Templates {
         add_filter( 'document_title_parts', [ $this, 'filter_document_title' ] );
         // Yoast remplace document_title_parts : sans ce filtre, l'onglet affiche « Ressources Archive ».
         add_filter( 'wpseo_title', [ $this, 'filter_wpseo_title' ] );
+        // Sans description Yoast saisie, Google n'a rien : on reprend l'extrait de la ressource.
+        add_filter( 'wpseo_metadesc', [ $this, 'filter_meta_description' ] );
+        add_filter( 'wpseo_opengraph_desc', [ $this, 'filter_meta_description' ] );
         add_filter( 'body_class', [ $this, 'filter_body_classes' ] );
         add_action( 'template_redirect', [ $this, 'remove_theme_elements' ] );
         add_shortcode( 'presellia_resource_hub', [ $this, 'render_hub_shortcode' ] );
@@ -79,6 +82,19 @@ class PRH_Templates {
             }
         }
         return $title_parts;
+    }
+
+    public function filter_meta_description( $desc ) {
+        if ( '' !== trim( (string) $desc ) ) {
+            return $desc;
+        }
+        if ( is_singular( PRH_Cpt::POST_TYPE ) ) {
+            $excerpt = get_post_field( 'post_excerpt', get_queried_object_id() );
+            $desc    = $excerpt ?: get_post_meta( get_queried_object_id(), '_prh_subtitle', true );
+        } elseif ( is_post_type_archive( PRH_Cpt::POST_TYPE ) ) {
+            $desc = get_option( 'prh_hub_subtitle', PRH_Activator::DEFAULT_HUB_SUBTITLE );
+        }
+        return wp_trim_words( wp_strip_all_tags( (string) $desc ), 30, '…' );
     }
 
     public function filter_wpseo_title( $title ) {

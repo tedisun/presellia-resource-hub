@@ -4,6 +4,18 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.2.2] — 2026-11-09
+### Sécurité
+- Limite anti-abus : l'IP du visiteur est lue en fin d'en-tête `X-Forwarded-For` (ajoutée par le proxy) et non plus au début (falsifiable).
+### Corrigé
+- Formulaire servi depuis le cache de WP Rocket : un jeton neuf est demandé à l'ouverture de la fenêtre ; un jeton expiré affiche un message clair au lieu de « Erreur de connexion ».
+### Ajouté
+- Version texte jointe à l'e-mail de livraison (délivrabilité).
+- Description Google (Yoast) reprise de l'extrait de la ressource quand aucune n'est saisie.
+### Modifié
+- Texte par défaut de l'e-mail de livraison raccourci.
+- Encart d'offre : « Facture fournie » et « Support WhatsApp et e-mail » à la place de « Facture avec TVA » et « Support dédié » ; badges qui passent à la ligne sur mobile.
+
 ## [1.2.1] — 2026-11-09
 ### Ajouté
 - Texte du bouton du formulaire réglable par ressource (`_prh_form_label`, champ API `form_label`), par défaut « Recevoir la ressource ».

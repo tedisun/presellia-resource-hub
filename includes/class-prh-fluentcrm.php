@@ -13,10 +13,24 @@ class PRH_FluentCRM {
     public function __construct() {
         add_action( 'wp_ajax_prh_capture_lead', [ $this, 'handle_lead_capture' ] );
         add_action( 'wp_ajax_nopriv_prh_capture_lead', [ $this, 'handle_lead_capture' ] );
+        add_action( 'wp_ajax_prh_fresh_nonce', [ $this, 'send_fresh_nonce' ] );
+        add_action( 'wp_ajax_nopriv_prh_fresh_nonce', [ $this, 'send_fresh_nonce' ] );
+    }
+
+    /**
+     * Jeton neuf demandé à l'ouverture de la fenêtre : la page peut venir du cache de
+     * WP Rocket, avec un jeton périmé qui ferait échouer l'envoi (« erreur de connexion »).
+     */
+    public function send_fresh_nonce(): void {
+        nocache_headers();
+        wp_send_json_success( [ 'nonce' => wp_create_nonce( 'prh_lead_capture_nonce' ) ] );
     }
 
     public function handle_lead_capture(): void {
-        check_ajax_referer( 'prh_lead_capture_nonce', 'nonce' );
+        if ( ! check_ajax_referer( 'prh_lead_capture_nonce', 'nonce', false ) ) {
+            PRH_Logger::warning( 'lead_bad_nonce', 'Formulaire refusé : jeton de sécurité expiré ou absent' );
+            wp_send_json_error( [ 'message' => __( 'La page a expiré. Rechargez-la puis validez à nouveau, vos informations ne sont pas perdues.', 'presellia-resource-hub' ) ], 403 );
+        }
 
         $first_name  = sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) );
         $email       = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );

@@ -107,7 +107,20 @@
 
             $feedback.hide().empty();
             $backdrop.css('display', 'flex').hide().fadeIn(200);
+
+            // La page peut sortir du cache avec un jeton périmé : on en demande un neuf.
+            $.get(prh_ajax.ajax_url, { action: 'prh_fresh_nonce', _: Date.now() }, function(r) {
+                if (r && r.success && r.data && r.data.nonce) {
+                    prh_ajax.nonce = r.data.nonce;
+                }
+            }, 'json');
         });
+
+        function showError(message) {
+            $feedback.empty().append(
+                $('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;"></div>').text(message)
+            ).show();
+        }
 
         $('.prh-modal-close, .prh-modal-backdrop').on('click', function(e) {
             if ($(e.target).hasClass('prh-modal-backdrop') || $(e.target).hasClass('prh-modal-close')) {
@@ -126,7 +139,7 @@
             var website   = $('#prh_lead_website').val() || '';
 
             if (!email) {
-                $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">Veuillez entrer une adresse email.</div>').show();
+                showError('Veuillez saisir votre adresse e-mail.');
                 return;
             }
 
@@ -157,12 +170,13 @@
                         }
                         $submitBtn.prop('disabled', false).text(submitLabel);
                     } else {
-                        $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">' + (response.data.message || 'Une erreur est survenue.') + '</div>').show();
+                        showError((response.data && response.data.message) || 'Une erreur est survenue. Réessayez dans un instant.');
                         $submitBtn.prop('disabled', false).text(submitLabel);
                     }
                 },
-                error: function() {
-                    $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">Erreur de connexion au serveur.</div>').show();
+                error: function(xhr) {
+                    var msg = xhr && xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message;
+                    showError(msg || 'La connexion a échoué. Vérifiez votre réseau puis réessayez.');
                     $submitBtn.prop('disabled', false).text(submitLabel);
                 }
             });

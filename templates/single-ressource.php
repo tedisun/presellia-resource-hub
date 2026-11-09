@@ -231,10 +231,10 @@ function prh_get_single_svg( string $cat_slug ): string {
                         <?php if ( $offer_desc ) : ?>
                             <p><?php echo esc_html( $offer_desc ); ?></p>
                         <?php endif; ?>
-                        <div style="display: flex; gap: 16px; align-items: center; color: #cbd5e1; font-size: 13px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; color: #cbd5e1; font-size: 13px;">
                             <span>✓ Activation garantie</span>
-                            <span>✓ Facture avec TVA</span>
-                            <span>✓ Support dédié</span>
+                            <span>✓ Facture fournie</span>
+                            <span>✓ Support WhatsApp et e-mail</span>
                         </div>
                     </div>
 

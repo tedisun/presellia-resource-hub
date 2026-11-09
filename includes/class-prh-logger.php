@@ -149,8 +149,13 @@ class PRH_Logger {
     public static function get_client_ip(): string {
         $ip = $_SERVER['REMOTE_ADDR'] ?? '';
         if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-            $parts = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-            $ip    = trim( $parts[0] );
+            // Le site est derrière un seul proxy (Traefik) qui AJOUTE l'IP réelle en fin de liste.
+            // La première valeur vient du visiteur et peut être inventée pour contourner la limite.
+            $parts = array_filter( array_map( 'trim', explode( ',', (string) $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) );
+            $last  = end( $parts );
+            if ( $last && filter_var( $last, FILTER_VALIDATE_IP ) ) {
+                $ip = $last;
+            }
         }
         return filter_var( $ip, FILTER_VALIDATE_IP ) ? $ip : '0.0.0.0';
     }
