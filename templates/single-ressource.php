@@ -215,7 +215,16 @@ function prh_get_single_svg( string $cat_slug ): string {
             ?>
             <section class="prh-offer-box">
                 <span class="prh-offer-tag"><?php echo esc_html( $offer_badge ); ?></span>
-                <div class="prh-offer-content">
+                <?php
+                $offer_image_id = $product->get_image_id();
+                $product_url    = get_permalink( $linked_product_id );
+                ?>
+                <div class="prh-offer-content<?php echo $offer_image_id ? ' has-image' : ''; ?>">
+                    <?php if ( $offer_image_id ) : ?>
+                        <a class="prh-offer-image" href="<?php echo esc_url( $product_url ); ?>">
+                            <?php echo wp_get_attachment_image( $offer_image_id, 'woocommerce_thumbnail', false, [ 'alt' => esc_attr( $offer_title ), 'loading' => 'lazy' ] ); ?>
+                        </a>
+                    <?php endif; ?>
                     <div class="prh-offer-left">
                         <h2><?php echo esc_html( $offer_title ); ?></h2>
                         <?php if ( $offer_desc ) : ?>

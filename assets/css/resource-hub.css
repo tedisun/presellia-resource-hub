@@ -509,9 +509,13 @@
 }
 
 /* Media Box */
+/* Couverture : format standard 16:9 (fichier conseillé 1600 × 900), affichée à 720 px max */
 .prh-media-container {
     position: relative;
     width: 100%;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
     aspect-ratio: 16 / 9;
     border-radius: 16px;
     overflow: hidden;
@@ -644,6 +648,27 @@
     grid-template-columns: 1fr 280px;
     gap: 30px;
     align-items: center;
+}
+
+/* Avec image produit : image | texte | prix */
+.prh-offer-content.has-image {
+    grid-template-columns: 150px 1fr 260px;
+}
+
+.prh-offer-image {
+    display: block;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 10px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.prh-offer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
 }
 
 .prh-offer-left h2 {
@@ -782,7 +807,8 @@
     margin-bottom: 6px;
 }
 
-.prh-form-group input {
+/* Champs texte uniquement : la case de consentement garde sa taille normale */
+.prh-form-group input:not([type="checkbox"]):not([type="radio"]) {
     width: 100% !important;
     height: 48px !important;
     padding: 10px 16px !important;
@@ -792,9 +818,41 @@
     box-sizing: border-box !important;
 }
 
-.prh-form-group input:focus {
+.prh-form-group input:not([type="checkbox"]):focus {
     border-color: #2563eb !important;
     outline: none !important;
+}
+
+/* Ligne de consentement : case à gauche, texte à droite, sur toute la largeur */
+.prh-modal .prh-form-consent {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 4px 0 8px;
+}
+
+.prh-modal .prh-form-consent input[type="checkbox"] {
+    appearance: auto !important;
+    -webkit-appearance: checkbox !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px;
+    margin: 2px 0 0 !important;
+    padding: 0 !important;
+    accent-color: #2563eb;
+    flex: 0 0 18px;
+    cursor: pointer;
+}
+
+.prh-modal .prh-form-consent label {
+    flex: 1 1 auto;
+    display: block;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1.45;
+    color: #475569 !important;
+    margin: 0 !important;
+    cursor: pointer;
 }
 
 .prh-form-submit {
@@ -848,7 +906,11 @@
     .prh-single-title {
         font-size: 28px;
     }
-    .prh-offer-content {
+    .prh-offer-content,
+    .prh-offer-content.has-image {
         grid-template-columns: 1fr;
+    }
+    .prh-offer-image {
+        max-width: 140px;
     }
 }

@@ -4,6 +4,14 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.1.1] — 2026-11-09
+### Ajouté
+- Image du produit WooCommerce dans l'encart d'offre (image | texte | prix), cliquable vers la fiche produit.
+### Modifié
+- Couverture de ressource : format standard 16:9 (fichier conseillé 1600 × 900, WebP), affichée à 720 px de large maximum au lieu de toute la largeur.
+### Corrigé
+- Case de consentement du formulaire : elle prenait la taille des champs texte (pleine largeur, 48 px) et repoussait son texte hors de la fenêtre.
+
 ## [1.1.0] — 2026-11-08
 ### Ajouté
 - Livraison par e-mail : après le formulaire, le visiteur reçoit le lien de la ressource par e-mail (`wp_mail`, donc le SMTP du site), même s'il a décoché le consentement marketing. Objet, texte et bouton modifiables par ressource (`_prh_email_subject`, `_prh_email_body`, `_prh_cta_label`), variables `{prenom}`, `{titre}`, `{lien}`.
