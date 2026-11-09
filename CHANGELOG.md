@@ -4,6 +4,12 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.2.4] — 2026-11-09
+### Corrigé
+- Une réponse GitHub en échec restait en cache après une mise à jour manuelle (« GitHub ne répond pas » pendant 1 h) : le cache est vidé dès que la version du plugin change, et un échec n'est plus gardé que 15 minutes.
+### Ajouté
+- Lien « Vérifier maintenant » à côté de l'état des mises à jour.
+
 ## [1.2.3] — 2026-11-09
 ### Modifié
 - Dépôt GitHub rendu public (comme LicenceFlow) : les mises à jour automatiques fonctionnent sans jeton, avec le ZIP public de la release.

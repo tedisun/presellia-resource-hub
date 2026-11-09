@@ -45,6 +45,12 @@ class PRH_Updater {
         add_action( 'upgrader_process_complete', [ $this, 'clear_cache' ], 10, 2 );
         // « Vérifier à nouveau » (Tableau de bord > Mises à jour) : on relit GitHub tout de suite.
         add_action( 'load-update-core.php', [ $this, 'clear_cache_on_force_check' ] );
+
+        // Nouvelle version installée (y compris par téléversement manuel) : on oublie l'ancienne réponse.
+        if ( get_option( 'prh_updater_seen_version' ) !== PRH_VERSION ) {
+            delete_transient( self::TRANSIENT_KEY );
+            update_option( 'prh_updater_seen_version', PRH_VERSION, false );
+        }
     }
 
     public function clear_cache_on_force_check(): void {
@@ -248,7 +254,7 @@ class PRH_Updater {
 
         $code = is_wp_error( $response ) ? 0 : (int) wp_remote_retrieve_response_code( $response );
         if ( 200 !== $code ) {
-            set_transient( self::TRANSIENT_KEY, [ 'error' => $code ], HOUR_IN_SECONDS );
+            set_transient( self::TRANSIENT_KEY, [ 'error' => $code ], 15 * MINUTE_IN_SECONDS );
             if ( class_exists( 'PRH_Logger' ) ) {
                 PRH_Logger::warning( 'update_check_failed', sprintf( 'Vérification de mise à jour GitHub impossible (HTTP %d)', $code ) );
             }

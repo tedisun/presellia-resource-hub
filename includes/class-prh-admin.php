@@ -116,13 +116,14 @@ class PRH_Admin {
                                     <p style="margin-top: 0;">
                                         <?php
                                         if ( '' === $prh_update['latest'] ) {
-                                            echo '<strong style="color:#b91c1c;">' . esc_html__( 'GitHub ne répond pas pour le moment : nouvelle tentative automatique dans l\'heure.', 'presellia-resource-hub' ) . '</strong>';
+                                            echo '<strong style="color:#b91c1c;">' . esc_html__( 'GitHub ne répond pas pour le moment : nouvelle tentative automatique dans 15 minutes.', 'presellia-resource-hub' ) . '</strong>';
                                         } elseif ( version_compare( PRH_VERSION, $prh_update['latest'], '<' ) ) {
                                             echo '<strong style="color:#b45309;">' . esc_html( sprintf( 'Mise à jour disponible : %1$s → %2$s (Extensions ou Tableau de bord > Mises à jour).', PRH_VERSION, $prh_update['latest'] ) ) . '</strong>';
                                         } else {
                                             echo '<strong style="color:#047857;">' . esc_html( sprintf( 'À jour (version %s). Les nouvelles versions publiées sur GitHub apparaissent dans Extensions.', PRH_VERSION ) ) . '</strong>';
                                         }
                                         ?>
+                                        <a href="<?php echo esc_url( admin_url( 'update-core.php?force-check=1' ) ); ?>" style="margin-left: 8px;"><?php esc_html_e( 'Vérifier maintenant', 'presellia-resource-hub' ); ?></a>
                                     </p>
                                     <?php if ( ! defined( 'PRESELLIA_GITHUB_TOKEN' ) ) : ?>
                                         <details>
