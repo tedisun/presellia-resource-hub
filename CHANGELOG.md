@@ -4,6 +4,14 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.2.0] — 2026-11-09
+### Ajouté
+- Mises à jour automatiques depuis les releases GitHub (dépôt privé) : la nouvelle version apparaît dans Extensions et peut s'installer seule si les mises à jour automatiques sont activées pour le plugin.
+- Téléchargement authentifié en deux temps (lien signé demandé avec le jeton, fichier téléchargé sans jeton).
+- Réglage « Jeton GitHub » et état de la connexion dans Ressources > Réglages. La constante `PRESELLIA_GITHUB_TOKEN` (wp-config.php) est utilisée en priorité.
+### Modifié
+- Le ZIP de release contient maintenant un dossier racine `presellia-resource-hub/`.
+
 ## [1.1.1] — 2026-11-09
 ### Ajouté
 - Image du produit WooCommerce dans l'encart d'offre (image | texte | prix), cliquable vers la fiche produit.

@@ -16,13 +16,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create plugin ZIP
+        # Dossier racine presellia-resource-hub/ : WordPress remplace le bon dossier
+        # lors d'une mise a jour (automatique ou par televersement).
         run: |
-          zip -r presellia-resource-hub.zip . \
-            --exclude "*.git*" \
-            --exclude ".github/*" \
-            --exclude "*.DS_Store" \
-            --exclude "*.gitignore" \
+          mkdir -p build/presellia-resource-hub
+          rsync -a ./ build/presellia-resource-hub/ \
+            --exclude ".git*" \
+            --exclude ".github" \
+            --exclude "build" \
+            --exclude "*.zip" \
+            --exclude ".DS_Store" \
             --exclude "CLAUDE.md"
+          cd build && zip -rq ../presellia-resource-hub.zip presellia-resource-hub
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

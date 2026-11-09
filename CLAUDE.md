@@ -41,7 +41,8 @@ Puis :
 2. `git commit -m "chore: bump version X.X.X → Y.Y.Y"`
 3. `git tag vY.Y.Y`
 4. `git push origin main && git push origin vY.Y.Y`
--> GitHub Actions compile le ZIP et publie la release automatiquement.
+-> GitHub Actions compile le ZIP (dossier racine `presellia-resource-hub/`) et publie la release automatiquement.
+-> Depuis 1.2.0, le site détecte la release via `PRH_Updater` (dépôt privé : jeton `PRESELLIA_GITHUB_TOKEN` dans wp-config.php ou option `prh_github_token`). Plus besoin de téléverser le ZIP.
 
 ---
 

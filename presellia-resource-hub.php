@@ -3,7 +3,7 @@
  * Plugin Name:       Presellia Resource Hub
  * Plugin URI:        https://presellia.com
  * Description:       Espace Ressources, Guides, Outils et Diagnostics Presellia avec capture FluentCRM, offres WooCommerce et API MCP pour Agents IA.
- * Version:           1.1.1
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Tedisun SARL
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // -----------------------------------------------------------------------------
 // Constantes globales
 // -----------------------------------------------------------------------------
-define( 'PRH_VERSION', '1.1.1' );
+define( 'PRH_VERSION', '1.2.0' );
 define( 'PRH_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PRH_URL', plugin_dir_url( __FILE__ ) );
 define( 'PRH_BASENAME', plugin_basename( __FILE__ ) );
@@ -64,6 +64,10 @@ function prh_init(): void {
     require_once PRH_PATH . 'includes/class-prh-templates.php';
     require_once PRH_PATH . 'includes/class-prh-api.php';
     require_once PRH_PATH . 'includes/class-prh-admin.php';
+    require_once PRH_PATH . 'includes/class-prh-updater.php';
+
+    // Mises à jour automatiques depuis les releases GitHub
+    PRH_Updater::get_instance();
 
     // Instanciations
     new PRH_Cpt();
