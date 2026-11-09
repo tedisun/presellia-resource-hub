@@ -11,8 +11,9 @@
  *    puis on télécharge ce lien signé SANS jeton : le stockage de GitHub refuse
  *    une requête qui porte à la fois un jeton et une signature.
  *
- * Jeton : constante PRESELLIA_GITHUB_TOKEN (wp-config.php, partagée avec les autres
- * plugins Presellia) ou réglage « Jeton GitHub » de la page Ressources > Réglages.
+ * Depuis 1.2.3 le dépôt est public : aucun jeton n'est nécessaire, WordPress télécharge le ZIP
+ * public de la release. Le jeton (constante PRESELLIA_GITHUB_TOKEN ou réglage « Jeton GitHub »)
+ * reste pris en charge si le dépôt redevenait privé.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -264,12 +265,19 @@ class PRH_Updater {
     }
 
     /**
-     * Adresse API du ZIP attaché (téléchargeable avec jeton, contrairement à browser_download_url).
+     * Adresse du ZIP attaché à la release.
+     * - Sans jeton (dépôt public) : lien public browser_download_url, téléchargé normalement par WordPress.
+     * - Avec jeton (dépôt privé) : adresse API, téléchargée en deux temps par download_package().
      */
     public static function get_package_url( array $release ): string {
+        $use_api = '' !== self::get_token();
         foreach ( (array) ( $release['assets'] ?? [] ) as $asset ) {
-            if ( ( $asset['name'] ?? '' ) === self::ASSET_NAME && ! empty( $asset['url'] ) ) {
-                return (string) $asset['url'];
+            if ( ( $asset['name'] ?? '' ) !== self::ASSET_NAME ) {
+                continue;
+            }
+            $url = $use_api ? ( $asset['url'] ?? '' ) : ( $asset['browser_download_url'] ?? '' );
+            if ( ! empty( $url ) ) {
+                return (string) $url;
             }
         }
         return '';

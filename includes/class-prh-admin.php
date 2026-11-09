@@ -115,18 +115,20 @@ class PRH_Admin {
                                 <td>
                                     <p style="margin-top: 0;">
                                         <?php
-                                        if ( ! $prh_update['token'] ) {
-                                            echo '<strong style="color:#b45309;">' . esc_html__( 'Jeton GitHub manquant : les mises à jour ne sont pas détectées.', 'presellia-resource-hub' ) . '</strong>';
-                                        } elseif ( '' === $prh_update['latest'] ) {
-                                            echo '<strong style="color:#b91c1c;">' . esc_html__( 'Jeton présent, mais GitHub ne répond pas : vérifiez le jeton (accès en lecture au dépôt presellia-resource-hub).', 'presellia-resource-hub' ) . '</strong>';
+                                        if ( '' === $prh_update['latest'] ) {
+                                            echo '<strong style="color:#b91c1c;">' . esc_html__( 'GitHub ne répond pas pour le moment : nouvelle tentative automatique dans l\'heure.', 'presellia-resource-hub' ) . '</strong>';
+                                        } elseif ( version_compare( PRH_VERSION, $prh_update['latest'], '<' ) ) {
+                                            echo '<strong style="color:#b45309;">' . esc_html( sprintf( 'Mise à jour disponible : %1$s → %2$s (Extensions ou Tableau de bord > Mises à jour).', PRH_VERSION, $prh_update['latest'] ) ) . '</strong>';
                                         } else {
-                                            echo '<strong style="color:#047857;">' . esc_html( sprintf( 'Connecté à GitHub (jeton : %1$s). Version installée %2$s, dernière publiée %3$s.', $prh_update['source'], PRH_VERSION, $prh_update['latest'] ) ) . '</strong>';
+                                            echo '<strong style="color:#047857;">' . esc_html( sprintf( 'À jour (version %s). Les nouvelles versions publiées sur GitHub apparaissent dans Extensions.', PRH_VERSION ) ) . '</strong>';
                                         }
                                         ?>
                                     </p>
                                     <?php if ( ! defined( 'PRESELLIA_GITHUB_TOKEN' ) ) : ?>
-                                        <input name="prh_github_token" type="password" id="prh_github_token" value="" class="regular-text" style="width: 100%; font-family: monospace;" autocomplete="off" placeholder="<?php echo esc_attr( $prh_update['token'] ? '•••••••• (enregistré — laisser vide pour le garder)' : 'github_pat_…' ); ?>">
-                                        <p class="description"><?php esc_html_e( 'Jeton GitHub avec accès en lecture au dépôt privé. Inutile si PRESELLIA_GITHUB_TOKEN est défini dans wp-config.php.', 'presellia-resource-hub' ); ?></p>
+                                        <details>
+                                            <summary style="cursor: pointer; color: #64748b;"><?php esc_html_e( 'Jeton GitHub (seulement si le dépôt redevient privé)', 'presellia-resource-hub' ); ?></summary>
+                                            <input name="prh_github_token" type="password" id="prh_github_token" value="" class="regular-text" style="width: 100%; font-family: monospace; margin-top: 8px;" autocomplete="off" placeholder="<?php echo esc_attr( $prh_update['token'] ? '•••••••• (enregistré — laisser vide pour le garder)' : 'github_pat_…' ); ?>">
+                                        </details>
                                     <?php endif; ?>
                                 </td>
                             </tr>

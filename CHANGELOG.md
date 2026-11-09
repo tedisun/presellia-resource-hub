@@ -4,6 +4,11 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.2.3] — 2026-11-09
+### Modifié
+- Dépôt GitHub rendu public (comme LicenceFlow) : les mises à jour automatiques fonctionnent sans jeton, avec le ZIP public de la release.
+- Réglages : l'état des mises à jour indique « À jour » ou « Mise à jour disponible » ; le champ jeton est replié (utile seulement si le dépôt redevient privé).
+
 ## [1.2.2] — 2026-11-09
 ### Sécurité
 - Limite anti-abus : l'IP du visiteur est lue en fin d'en-tête `X-Forwarded-For` (ajoutée par le proxy) et non plus au début (falsifiable).

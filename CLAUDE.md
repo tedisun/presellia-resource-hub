@@ -42,7 +42,7 @@ Puis :
 3. `git tag vY.Y.Y`
 4. `git push origin main && git push origin vY.Y.Y`
 -> GitHub Actions compile le ZIP (dossier racine `presellia-resource-hub/`) et publie la release automatiquement.
--> Depuis 1.2.0, le site détecte la release via `PRH_Updater` (dépôt privé : jeton `PRESELLIA_GITHUB_TOKEN` dans wp-config.php ou option `prh_github_token`). Plus besoin de téléverser le ZIP.
+-> Depuis 1.2.3, le dépôt est PUBLIC : le site détecte et installe la release via `PRH_Updater` sans jeton. Ne jamais committer de secret (clés, jetons, mots de passe).
 
 ---
 
