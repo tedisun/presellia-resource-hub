@@ -19,6 +19,7 @@ $offer_badge        = get_post_meta( $post_id, '_prh_offer_badge', true ) ?: 'OF
 $offer_custom_title = get_post_meta( $post_id, '_prh_offer_custom_title', true );
 $offer_custom_desc  = get_post_meta( $post_id, '_prh_offer_custom_desc', true );
 $fluent_form_id     = absint( get_post_meta( $post_id, '_prh_fluent_form_id', true ) );
+$form_label         = PRH_Delivery::get_form_label( $post_id );
 
 $terms      = get_the_terms( $post_id, PRH_Cpt::TAXONOMY );
 $first_cat  = ( ! empty( $terms ) && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
@@ -188,7 +189,7 @@ function prh_get_single_svg( string $cat_slug ): string {
             <p style="color: #64748b; font-size: 15px; margin: 0 0 24px;"><?php esc_html_e( 'Laissez votre prénom et votre e-mail : l\'accès s\'ouvre tout de suite, et nous vous envoyons aussi le lien par e-mail.', 'presellia-resource-hub' ); ?></p>
             <button type="button" class="prh-action-btn prh-open-gated-modal" data-resource-id="<?php echo esc_attr( $post_id ); ?>" data-resource-title="<?php echo esc_attr( get_the_title() ); ?>">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?>
+                <?php echo esc_html( $form_label ); ?>
             </button>
             <div class="prh-action-guarantee"><?php esc_html_e( '✓ Accès immédiat · Lien envoyé aussi par e-mail', 'presellia-resource-hub' ); ?></div>
         <?php else : ?>
@@ -258,8 +259,8 @@ function prh_get_single_svg( string $cat_slug ): string {
 <div class="prh-modal-backdrop" id="prh-lead-modal">
     <div class="prh-modal">
         <button type="button" class="prh-modal-close">&times;</button>
-        <h3><?php esc_html_e( 'Débloquer votre ressource', 'presellia-resource-hub' ); ?></h3>
-        <p id="prh-modal-title-target"><?php esc_html_e( 'Entrez vos informations pour recevoir votre accès instantané.', 'presellia-resource-hub' ); ?></p>
+        <h3 id="prh-modal-title-target"><?php the_title(); ?></h3>
+        <p><?php esc_html_e( 'Le lien s\'ouvre ici dès que vous validez, et nous vous l\'envoyons aussi par e-mail.', 'presellia-resource-hub' ); ?></p>
 
         <div id="prh-modal-feedback" style="display: none;"></div>
 
@@ -297,7 +298,7 @@ function prh_get_single_svg( string $cat_slug ): string {
                     <label for="prh_lead_consent" style="font-weight: 400; font-size: 13px; line-height: 1.45; margin: 0;"><?php esc_html_e( 'J\'accepte de recevoir les conseils et offres de Presellia par email. Désinscription possible à tout moment.', 'presellia-resource-hub' ); ?></label>
                 </div>
 
-                <button type="submit" class="prh-form-submit"><?php esc_html_e( 'Débloquer mon accès immédiat', 'presellia-resource-hub' ); ?></button>
+                <button type="submit" class="prh-form-submit" data-label="<?php echo esc_attr( $form_label ); ?>"><?php echo esc_html( $form_label ); ?></button>
             </form>
 
             <!-- Après validation : bouton d'accès (nouvel onglet) pour garder cette page et l'offre visibles -->

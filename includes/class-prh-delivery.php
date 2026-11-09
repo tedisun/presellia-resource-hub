@@ -14,6 +14,16 @@ class PRH_Delivery {
 
     public const DEFAULT_CTA_LABEL = 'Ouvrir la ressource';
 
+    public const DEFAULT_FORM_LABEL = 'Recevoir la ressource';
+
+    /**
+     * Texte du bouton qui ouvre le formulaire et le valide (ex. « Recevoir le guide »).
+     */
+    public static function get_form_label( int $resource_id ): string {
+        $label = trim( (string) get_post_meta( $resource_id, '_prh_form_label', true ) );
+        return '' !== $label ? $label : self::DEFAULT_FORM_LABEL;
+    }
+
     public const DEFAULT_SUBJECT = '{prenom}, voici votre accès : {titre}';
 
     public const DEFAULT_BODY = "Bonjour {prenom},\n\nMerci pour votre demande. Voici le lien vers « {titre} ». Gardez cet e-mail : le lien reste valable, vous pourrez y revenir quand vous voudrez.\n\nUne question en chemin ? Répondez simplement à cet e-mail, on vous aide.\n\nL'équipe Presellia";

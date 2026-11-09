@@ -105,6 +105,7 @@ class PRH_Metaboxes {
         $subtitle       = get_post_meta( $post->ID, '_prh_subtitle', true );
         $value_stack    = get_post_meta( $post->ID, '_prh_value_stack', true );
         $cta_label      = get_post_meta( $post->ID, '_prh_cta_label', true );
+        $form_label     = get_post_meta( $post->ID, '_prh_form_label', true );
         $email_subject  = get_post_meta( $post->ID, '_prh_email_subject', true );
         $email_body     = get_post_meta( $post->ID, '_prh_email_body', true );
         ?>
@@ -186,7 +187,11 @@ class PRH_Metaboxes {
                 <h4 style="margin: 8px 0 4px;"><?php esc_html_e( 'Livraison après le formulaire', 'presellia-resource-hub' ); ?></h4>
                 <p class="description" style="margin-top: 0;"><?php esc_html_e( 'Après le formulaire, le visiteur voit un bouton vers le lien ci-dessus et reçoit le même lien par e-mail (même s\'il refuse les e-mails marketing). Variables : {prenom}, {titre}, {lien}.', 'presellia-resource-hub' ); ?></p>
 
-                <label for="prh_cta_label"><strong><?php esc_html_e( 'Texte du bouton d\'accès', 'presellia-resource-hub' ); ?></strong></label>
+                <label for="prh_form_label"><strong><?php esc_html_e( 'Texte du bouton du formulaire', 'presellia-resource-hub' ); ?></strong></label>
+                <input type="text" id="prh_form_label" name="prh_form_label" value="<?php echo esc_attr( $form_label ); ?>" class="regular-text" placeholder="<?php echo esc_attr( PRH_Delivery::DEFAULT_FORM_LABEL ); ?>" />
+                <p class="description"><?php esc_html_e( 'Ex. : Recevoir le guide, Recevoir l\'outil, Recevoir la checklist.', 'presellia-resource-hub' ); ?></p>
+
+                <label for="prh_cta_label" style="display: block; margin-top: 12px;"><strong><?php esc_html_e( 'Texte du bouton d\'accès', 'presellia-resource-hub' ); ?></strong></label>
                 <input type="text" id="prh_cta_label" name="prh_cta_label" value="<?php echo esc_attr( $cta_label ); ?>" class="regular-text" placeholder="<?php echo esc_attr( PRH_Delivery::DEFAULT_CTA_LABEL ); ?>" />
 
                 <label for="prh_email_subject" style="display: block; margin-top: 12px;"><strong><?php esc_html_e( 'Objet de l\'e-mail de livraison', 'presellia-resource-hub' ); ?></strong></label>
@@ -262,6 +267,7 @@ class PRH_Metaboxes {
             '_prh_subtitle'            => 'sanitize_text_field',
             '_prh_value_stack'         => 'sanitize_textarea_field',
             '_prh_cta_label'           => 'sanitize_text_field',
+            '_prh_form_label'          => 'sanitize_text_field',
             '_prh_email_subject'       => 'sanitize_text_field',
             '_prh_email_body'          => 'sanitize_textarea_field',
             '_prh_linked_product_id'   => 'absint',

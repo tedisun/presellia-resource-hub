@@ -42,6 +42,14 @@ class PRH_Updater {
         add_filter( 'upgrader_pre_download', [ $this, 'download_package' ], 10, 3 );
         add_filter( 'upgrader_source_selection', [ $this, 'fix_source_dir' ], 10, 4 );
         add_action( 'upgrader_process_complete', [ $this, 'clear_cache' ], 10, 2 );
+        // « Vérifier à nouveau » (Tableau de bord > Mises à jour) : on relit GitHub tout de suite.
+        add_action( 'load-update-core.php', [ $this, 'clear_cache_on_force_check' ] );
+    }
+
+    public function clear_cache_on_force_check(): void {
+        if ( isset( $_GET['force-check'] ) && current_user_can( 'update_plugins' ) ) {
+            delete_transient( self::TRANSIENT_KEY );
+        }
     }
 
     public static function get_token(): string {

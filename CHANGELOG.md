@@ -4,6 +4,13 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.2.1] — 2026-11-09
+### Ajouté
+- Texte du bouton du formulaire réglable par ressource (`_prh_form_label`, champ API `form_label`), par défaut « Recevoir la ressource ».
+- « Vérifier à nouveau » dans Tableau de bord > Mises à jour relit GitHub immédiatement (cache de 6 h vidé).
+### Modifié
+- Fin du vocabulaire « débloquer » : la fenêtre affiche le titre de la ressource, le bouton dit ce qu'on reçoit, le message final devient « C'est prêt ».
+
 ## [1.2.0] — 2026-11-09
 ### Ajouté
 - Mises à jour automatiques depuis les releases GitHub (dépôt privé) : la nouvelle version apparaît dans Extensions et peut s'installer seule si les mises à jour automatiques sont activées pour le plugin.

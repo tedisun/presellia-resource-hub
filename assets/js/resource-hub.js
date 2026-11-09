@@ -52,6 +52,7 @@
         var $submitBtn = $form.find('.prh-form-submit');
         var $feedback = $('#prh-modal-feedback');
         var $success = $('#prh-modal-success');
+        var submitLabel = $submitBtn.data('label') || $.trim($submitBtn.text());
         var STORE_KEY = 'prh_unlocked';
 
         // Mémoire locale (par navigateur) des ressources déjà débloquées : le visiteur qui revient
@@ -85,7 +86,7 @@
             var url = data.download_url;
             $feedback.hide().empty();
             $form.hide();
-            $('#prh-success-message').text('✓ ' + (data.message || 'C\'est débloqué.'));
+            $('#prh-success-message').text('✓ ' + (data.message || 'C\'est prêt.'));
             if (isSafeUrl(url)) {
                 $('#prh-success-link').attr('href', url).text((data.cta_label || 'Ouvrir la ressource') + ' →').show();
             } else {
@@ -129,7 +130,7 @@
                 return;
             }
 
-            $submitBtn.prop('disabled', true).text('Déblocage en cours...');
+            $submitBtn.prop('disabled', true).text('Envoi en cours…');
             $feedback.empty().hide();
 
             $.ajax({
@@ -154,15 +155,15 @@
                         if (response.data && isSafeUrl(response.data.download_url)) {
                             rememberUnlocked(resId, response.data.download_url, response.data.cta_label);
                         }
-                        $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');
+                        $submitBtn.prop('disabled', false).text(submitLabel);
                     } else {
                         $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">' + (response.data.message || 'Une erreur est survenue.') + '</div>').show();
-                        $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');
+                        $submitBtn.prop('disabled', false).text(submitLabel);
                     }
                 },
                 error: function() {
                     $feedback.html('<div style="color: #ef4444; font-weight: 600; margin-bottom: 12px;">Erreur de connexion au serveur.</div>').show();
-                    $submitBtn.prop('disabled', false).text('Débloquer mon accès immédiat');
+                    $submitBtn.prop('disabled', false).text(submitLabel);
                 }
             });
         });

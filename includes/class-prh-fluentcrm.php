@@ -82,8 +82,8 @@ class PRH_FluentCRM {
             'cta_label'    => PRH_Delivery::get_cta_label( $resource_id ),
             'email_sent'   => $email_sent,
             'message'      => $email_sent
-                ? __( 'C\'est débloqué. Nous vous avons aussi envoyé le lien par e-mail.', 'presellia-resource-hub' )
-                : __( 'C\'est débloqué. Ouvrez la ressource avec le bouton ci-dessous.', 'presellia-resource-hub' ),
+                ? __( 'C\'est prêt. Nous vous avons aussi envoyé le lien par e-mail.', 'presellia-resource-hub' )
+                : __( 'C\'est prêt. Ouvrez la ressource avec le bouton ci-dessous.', 'presellia-resource-hub' ),
         ] );
     }
 
