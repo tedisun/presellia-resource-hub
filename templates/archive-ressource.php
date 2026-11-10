@@ -124,27 +124,16 @@ $show_filters = $query->post_count >= $prh_filters_min;
                 }
 
                 [ $tint_class, $icon_svg ] = prh_get_card_icon( $first_slug );
-                $footer_meta = implode( ' · ', array_filter( [ $format_spec, $compatible_os ] ) );
+                // Même verbe que le bouton de la page (« Recevoir le guide ») pour une ressource sous formulaire.
+                $card_cta = 'gated' === $access_type ? PRH_Delivery::get_form_label( $post_id ) : prh_get_card_cta( $first_slug );
                 ?>
                 <a href="<?php the_permalink(); ?>" class="prh-card" data-categories="<?php echo esc_attr( implode( ' ', $cat_slugs ) ); ?>">
-                    <div class="prh-card-header">
-                        <div class="prh-card-icon <?php echo esc_attr( $tint_class ); ?>">
-                            <?php if ( has_post_thumbnail() ) : ?>
-                                <?php the_post_thumbnail( 'thumbnail', [ 'loading' => 'lazy', 'alt' => '' ] ); ?>
-                            <?php else : ?>
-                                <?php echo $icon_svg; // phpcs:ignore WordPress.Security.EscapeOutput -- SVG statique interne ?>
-                            <?php endif; ?>
-                        </div>
-                        <div class="prh-card-badges">
-                            <?php if ( $first_cat ) : ?>
-                                <span class="prh-card-pill"><?php echo esc_html( $first_cat ); ?></span>
-                            <?php endif; ?>
-                            <?php if ( 'gated' === $access_type ) : ?>
-                                <span class="prh-card-pill prh-pill-gated" title="<?php esc_attr_e( 'Gratuit, en échange de votre adresse email', 'presellia-resource-hub' ); ?>"><?php esc_html_e( 'Gratuit · email', 'presellia-resource-hub' ); ?></span>
-                            <?php else : ?>
-                                <span class="prh-card-pill prh-pill-free"><?php esc_html_e( 'Accès libre', 'presellia-resource-hub' ); ?></span>
-                            <?php endif; ?>
-                        </div>
+                    <div class="prh-card-media <?php echo has_post_thumbnail() ? '' : esc_attr( $tint_class ); ?>">
+                        <?php if ( has_post_thumbnail() ) : ?>
+                            <?php the_post_thumbnail( 'medium_large', [ 'loading' => 'lazy', 'alt' => esc_attr( get_the_title() ) ] ); ?>
+                        <?php else : ?>
+                            <?php echo $icon_svg; // phpcs:ignore WordPress.Security.EscapeOutput -- SVG statique interne ?>
+                        <?php endif; ?>
                     </div>
 
                     <div class="prh-card-body">
@@ -154,16 +143,12 @@ $show_filters = $query->post_count >= $prh_filters_min;
                             if ( has_excerpt() ) {
                                 echo esc_html( get_the_excerpt() );
                             } else {
-                                echo esc_html( wp_trim_words( get_the_content(), 18, '…' ) );
+                                echo esc_html( wp_trim_words( wp_strip_all_tags( get_the_content() ), 30, '…' ) );
                             }
                             ?>
                         </p>
+                        <span class="prh-card-cta"><?php echo esc_html( $card_cta ); ?> →</span>
                     </div>
-
-                    <footer class="prh-card-footer">
-                        <span class="prh-card-os"><?php echo esc_html( $footer_meta ?: __( 'Tous systèmes', 'presellia-resource-hub' ) ); ?></span>
-                        <span class="prh-card-cta"><?php echo esc_html( prh_get_card_cta( $first_slug ) ); ?> →</span>
-                    </footer>
                 </a>
             <?php
             endwhile;

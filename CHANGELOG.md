@@ -4,6 +4,13 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.3.0] — 2026-11-10
+### Modifié
+- Page /ressources/ façon articles de blog : grande image 16:9 en haut de chaque carte (format medium_large), titre en Lexend Deca, aperçu sur 3 lignes, lien d'action. Étiquettes et pied de carte retirés.
+- 3 cartes par ligne (2 sur tablette, 1 sur mobile) au lieu de 2.
+- Lien d'action d'une ressource sous formulaire = texte du bouton de la page (« Recevoir le guide »).
+- Sans image : grand pictogramme de la catégorie sur fond teinté.
+
 ## [1.2.4] — 2026-11-09
 ### Corrigé
 - Une réponse GitHub en échec restait en cache après une mise à jour manuelle (« GitHub ne répond pas » pendant 1 h) : le cache est vidé dès que la version du plugin change, et un échec n'est plus gardé que 15 minutes.

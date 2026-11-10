@@ -200,62 +200,52 @@
     outline: none !important;
 }
 
-/* Grille de cartes (style des cartes de hub) */
+/* Grille de cartes façon articles de blog : grande image 16:9, titre, aperçu */
 .prh-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
-    margin-top: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 36px 26px;
+    margin-top: 28px;
 }
 
 .prh-card {
-    background: #FFFFFF;
-    border: 1px solid var(--prh-border);
-    border-radius: var(--prh-radius);
-    padding: 24px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-    transition: all 0.2s ease;
     text-decoration: none !important;
     color: inherit !important;
+    background: transparent;
 }
 
-.prh-card:hover {
-    transform: translateY(-2px);
-    border-color: #CBD5E1;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
-}
-
-.prh-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.prh-card-icon {
-    width: 48px;
-    height: 48px;
+.prh-card-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
     border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    overflow: hidden;
-    transition: transform 0.2s ease;
+    background: var(--prh-slate-100);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
 }
 
-.prh-card-icon img {
-    width: 100%;
-    height: 100%;
+.prh-card-media img {
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover;
     display: block;
+    transition: transform 0.35s ease;
 }
 
-.prh-card:hover .prh-card-icon {
-    transform: scale(1.06);
+.prh-card:hover .prh-card-media img {
+    transform: scale(1.04);
+}
+
+/* Sans image : grand pictogramme de la catégorie sur fond teinté */
+.prh-card-media svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.9;
 }
 
 .prh-tint-blue { background: #EFF6FF; color: #2563EB; }
@@ -263,76 +253,62 @@
 .prh-tint-purple { background: #F3E8FF; color: #7C3AED; }
 .prh-tint-amber { background: #FEF3C7; color: #D97706; }
 
-.prh-card-badges {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 6px;
-}
-
-.prh-card-pill {
-    display: inline-flex;
-    align-items: center;
-    height: 24px;
-    padding: 0 8px;
-    border-radius: 6px;
-    background: var(--prh-slate-100);
-    color: var(--prh-slate-600);
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.prh-card-pill.prh-pill-free { background: #DCFCE7; color: #166534; }
-.prh-card-pill.prh-pill-gated { background: #EEF2FF; color: #4338CA; }
-
 .prh-card-body {
+    display: flex;
+    flex-direction: column;
     flex: 1;
 }
 
 .prh-card-title {
-    font-size: 18px !important;
-    font-weight: 800 !important;
+    font-family: "Lexend Deca", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
     color: var(--prh-slate-900) !important;
+    line-height: 1.3 !important;
     letter-spacing: -0.01em;
-    line-height: 1.35 !important;
     margin: 0 0 8px !important;
+    transition: color 0.15s ease;
+}
+
+.prh-card:hover .prh-card-title {
+    color: var(--prh-blue) !important;
 }
 
 .prh-card-excerpt {
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--prh-slate-600);
-    line-height: 1.45;
-    margin: 0 0 16px;
-}
-
-.prh-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border-top: 1px solid var(--prh-border-light);
-    padding-top: 14px;
-    margin-top: auto;
-}
-
-.prh-card-os {
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--prh-slate-500);
-    min-width: 0;
+    line-height: 1.55;
+    margin: 0 0 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .prh-card-cta {
-    font-size: 13px;
+    margin-top: auto;
+    font-size: 13.5px;
     font-weight: 700;
     color: var(--prh-blue);
-    white-space: nowrap;
     transition: transform 0.15s ease;
+    display: inline-block;
 }
 
 .prh-card:hover .prh-card-cta {
     transform: translateX(3px);
+}
+
+@media (max-width: 960px) {
+    .prh-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .prh-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
 }
 
 .prh-empty {
@@ -900,9 +876,6 @@
 }
 
 @media (max-width: 768px) {
-    .prh-grid {
-        grid-template-columns: 1fr;
-    }
     .prh-single-title {
         font-size: 28px;
     }
