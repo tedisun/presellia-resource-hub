@@ -106,7 +106,7 @@ class PRH_Admin {
                                 <th scope="row"><label for="prh_reply_to"><?php esc_html_e( 'Adresse de réponse des e-mails', 'presellia-resource-hub' ); ?></label></th>
                                 <td>
                                     <input name="prh_reply_to" type="email" id="prh_reply_to" value="<?php echo esc_attr( get_option( 'prh_reply_to', '' ) ); ?>" class="regular-text" style="width: 100%;" placeholder="support@presellia.com">
-                                    <p class="description"><?php esc_html_e( 'Quand un visiteur répond à l\'e-mail de livraison, sa réponse arrive ici. Vide = adresse d\'envoi du site.', 'presellia-resource-hub' ); ?></p>
+                                    <p class="description"><?php esc_html_e( 'Quand un visiteur répond à l\'e-mail de livraison, sa réponse arrive ici. Vide = support@presellia.com.', 'presellia-resource-hub' ); ?></p>
                                 </td>
                             </tr>
                             <?php $prh_update = PRH_Updater::get_status(); ?>

@@ -4,6 +4,10 @@ Toutes les modifications notables apportées à ce projet seront documentées da
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [1.3.1] — 2026-11-10
+### Modifié
+- E-mail de livraison : les réponses vont à support@presellia.com par défaut (règle contact@ avant, support@ après récupération). Le réglage « Adresse de réponse » reste prioritaire s'il est rempli.
+
 ## [1.3.0] — 2026-11-10
 ### Modifié
 - Page /ressources/ façon articles de blog : grande image 16:9 en haut de chaque carte (format medium_large), titre en Lexend Deca, aperçu sur 3 lignes, lien d'action. Étiquettes et pied de carte retirés.

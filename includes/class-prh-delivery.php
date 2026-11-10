@@ -16,6 +16,8 @@ class PRH_Delivery {
 
     public const DEFAULT_FORM_LABEL = 'Recevoir la ressource';
 
+    public const DEFAULT_REPLY_TO = 'support@presellia.com';
+
     /**
      * Texte du bouton qui ouvre le formulaire et le valide (ex. « Recevoir le guide »).
      */
@@ -65,7 +67,8 @@ class PRH_Delivery {
         $html      = self::render_html( $body_text, $access_url, self::get_cta_label( $resource_id ) );
 
         $headers = [ 'Content-Type: text/html; charset=UTF-8' ];
-        $reply_to = sanitize_email( (string) get_option( 'prh_reply_to', '' ) );
+        // Après récupération d'une ressource, la personne est une cliente : ses réponses vont au support.
+        $reply_to = sanitize_email( (string) get_option( 'prh_reply_to', '' ) ) ?: self::DEFAULT_REPLY_TO;
         if ( $reply_to ) {
             $headers[] = 'Reply-To: Presellia <' . $reply_to . '>';
         }
